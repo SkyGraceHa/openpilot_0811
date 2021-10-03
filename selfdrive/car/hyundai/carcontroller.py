@@ -145,6 +145,7 @@ class CarController():
     self.cruise_gap_prev = 0
     self.cruise_gap_set_init = 0
     self.cruise_gap_switch_timer = 0
+    self.cruise_gap_auto_switch_timer = 0
     self.cruise_gap_adjusting = False
     self.standstill_fault_reduce_timer = 0
     self.cruise_gap_prev2 = 0
