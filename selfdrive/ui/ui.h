@@ -20,6 +20,9 @@
 #include "selfdrive/common/params.h"
 #include "selfdrive/common/util.h"
 
+#define UI_FEATURE_BRAKE 1
+#define UI_FEATURE_AUTOHOLD 1
+
 #define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
@@ -81,17 +84,17 @@ const int header_h = 420;
 const int footer_h = 280;
 const Rect map_overlay_btn = {0, 465, 150, 150};
 const Rect map_return_btn = {1770, 465, 150, 150};
-const Rect map_btn = {1425, 905, 140, 140};
-const Rect rec_btn = {1745, 905, 140, 140};
-const Rect laneless_btn = {1585, 905, 140, 140};
+const Rect map_btn = {1340, 800, 200, 250};
+const Rect rec_btn = {1740, 800, 150, 250};
+const Rect laneless_btn = {1540, 800, 200, 250};
 const Rect monitoring_btn = {50, 830, 140, 140};
 const Rect ml_btn = {1265, 905, 140, 140};
 const Rect stockui_btn = {15, 15, 184, 202};
 const Rect tuneui_btn = {1720, 15, 184, 202};
-const Rect livetunepanel_left_btn = {500, 750, 170, 160};
-const Rect livetunepanel_right_btn = {1250, 750, 170, 160};
-const Rect livetunepanel_left_above_btn = {500, 575, 170, 160};
-const Rect livetunepanel_right_above_btn = {1250, 575, 170, 160};
+const Rect livetunepanel_left_btn = {500, 480, 170, 160};
+const Rect livetunepanel_right_btn = {1250, 480, 170, 160};
+const Rect livetunepanel_left_above_btn = {500, 305, 170, 160};
+const Rect livetunepanel_right_above_btn = {1250, 305, 170, 160};
 
 const int UI_FREQ = 20;   // Hz
 
@@ -100,13 +103,17 @@ typedef enum UIStatus {
   STATUS_ENGAGED,
   STATUS_WARNING,
   STATUS_ALERT,
+  STATUS_BRAKE,
+  STATUS_CRUISE,  
 } UIStatus;
 
 const QColor bg_colors [] = {
-  [STATUS_DISENGAGED] =  QColor(0x17, 0x33, 0x49, 0xc8),
+  [STATUS_DISENGAGED] = QColor(0x17, 0x33, 0x49, 0x96),
   [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0x96),
   [STATUS_WARNING] = QColor(0xDA, 0x6F, 0x25, 0x96),
   [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0x96),
+  [STATUS_BRAKE] = QColor(0xA4, 0x32, 0x00, 0x96),
+  [STATUS_CRUISE] = QColor(0x00, 0x64, 0xC8, 0x96),
 };
 
 typedef struct {

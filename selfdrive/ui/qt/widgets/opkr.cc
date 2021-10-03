@@ -3271,8 +3271,8 @@ SteerDeltaUpBase::SteerDeltaUpBase() : AbstractControl("SteerDeltaUp기본값", 
     auto str = QString::fromStdString(params.get("SteerDeltaUpBaseAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 7 ) {
-      value = 7;
+    if (value >= 4 ) {
+      value = 4;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaUpBaseAdj", values.toStdString());
@@ -3318,8 +3318,8 @@ SteerDeltaUpMax::SteerDeltaUpMax() : AbstractControl("SteerDeltaUp최대값", "S
     auto str = QString::fromStdString(params.get("SteerDeltaUpAdj"));
     int value = str.toInt();
     value = value - 1;
-    if (value <= 3 ) {
-      value = 3;
+    if (value <= 4 ) {
+      value = 4;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaUpAdj", values.toStdString());
@@ -3389,8 +3389,8 @@ SteerDeltaDownBase::SteerDeltaDownBase() : AbstractControl("SteerDeltaDown기본
     auto str = QString::fromStdString(params.get("SteerDeltaDownBaseAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 15 ) {
-      value = 15;
+    if (value >= 5 ) {
+      value = 5;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaDownBaseAdj", values.toStdString());
@@ -3436,8 +3436,8 @@ SteerDeltaDownMax::SteerDeltaDownMax() : AbstractControl("SteerDeltaDown최대�
     auto str = QString::fromStdString(params.get("SteerDeltaDownAdj"));
     int value = str.toInt();
     value = value - 1;
-    if (value <= 7 ) {
-      value = 7;
+    if (value <= 5 ) {
+      value = 5;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaDownAdj", values.toStdString());
@@ -3448,8 +3448,8 @@ SteerDeltaDownMax::SteerDeltaDownMax() : AbstractControl("SteerDeltaDown최대�
     auto str = QString::fromStdString(params.get("SteerDeltaDownAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 15 ) {
-      value = 15;
+    if (value >= 10 ) {
+      value = 10;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaDownAdj", values.toStdString());
