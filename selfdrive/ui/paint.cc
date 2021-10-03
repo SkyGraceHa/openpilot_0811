@@ -703,7 +703,7 @@ static void ui_draw_vision_event(UIState *s) {
   
   //draw compass by opkr and re-designed by hoya
   if (s->scene.gpsAccuracyUblox != 0.00 && !s->scene.comma_stock_ui) {
-    const int radius = 85;
+    const int radius = 185;
     const int compass_x = 1920 / 2 - 20;
     const int compass_y = 1080 - 40;
     ui_draw_circle_image_rotation(s, compass_x, compass_y, radius + 40, "direction", nvgRGBA(0, 0, 0, 0), 0.7f, -(s->scene.bearingUblox));
