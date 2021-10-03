@@ -34,6 +34,7 @@ class NaviControl():
     self.map_speed_block = False
     self.map_speed_dist = 0
     self.map_speed = 0
+    self.map_speed_control_start = False
     self.onSpeedControl = False
     self.map_speed_dist_prev = 0
 
@@ -177,17 +178,25 @@ class NaviControl():
       final_cam_decel_start_dist = cam_distance_calc*consider_speed*v_ego_kph * (1 + self.safetycam_decel_dist_gain*0.01)
       if self.map_speed_dist < final_cam_decel_start_dist:
         spdTarget = self.map_speed
+        self.map_speed_control_start = True
         self.onSpeedControl = True
       elif self.map_speed_dist >= final_cam_decel_start_dist and self.map_speed_block:
+        self.map_speed_control_start = True
         spdTarget = self.map_speed
         self.onSpeedControl = True
       elif self.map_speed_dist < min_control_dist:
+        self.map_speed_control_start = True
+        spdTarget = self.map_speed
+        self.onSpeedControl = True
+      elif self.map_speed_control_start:
         spdTarget = self.map_speed
         self.onSpeedControl = True
       else:
+        self.map_speed_control_start = False
         self.onSpeedControl = False
         return cruise_set_speed_kph
     else:
+      self.map_speed_control_start = False
       spdTarget = cruise_set_speed_kph
       self.onSpeedControl = False
       return cruise_set_speed_kph
@@ -203,17 +212,17 @@ class NaviControl():
     # if v_ego_kph < speedLimit:
     #   v_ego_kph = speedLimit
 
-    print('spdTarget={}  v_ego_kph={}  CS.map_enabled={}'.format(spdTarget, v_ego_kph, CS.map_enabled))
-
     cruise_set_speed_kph = spdTarget + round(spdTarget*0.01*self.map_spdlimit_offset)
 
     return cruise_set_speed_kph
 
   def auto_speed_control(self, CS, ctrl_speed, path_plan):
     modelSpeed = path_plan.modelSpeed
-    # if CS.cruise_set_mode:
-    #   vFuture = c.hudControl.vFuture * CV.MS_TO_KPH
-    #   ctrl_speed = vFuture
+    if CS.cruise_set_mode != 3:
+      vFuture = CS.CP.vFuture
+      ctrl_speed = vFuture
+      if CS.CP.resSpeed:
+        ctrl_speed = CS.CP.resSpeed
     if CS.gasPressed == self.gasPressed_old:
       return ctrl_speed
     elif self.gasPressed_old:
@@ -221,7 +230,7 @@ class NaviControl():
       ctrl_speed = max(ctrl_speed, clu_Vanz)
       CS.set_cruise_speed(ctrl_speed)
     else:
-      ctrl_speed = interp(modelSpeed, [30, 90], [45, 90]) # curve speed ratio
+      ctrl_speed = min(ctrl_speed, interp(modelSpeed, [30, 90], [45, 90])) # curve speed ratio
 
     self.gasPressed_old = CS.gasPressed
     return  ctrl_speed
@@ -236,7 +245,7 @@ class NaviControl():
       kph_set_vEgo = self.get_navi_speed(self.sm , CS, cruiseState_speed) # camspeed
       self.ctrl_speed = min(cruiseState_speed, kph_set_vEgo)
 
-      if CS.cruise_set_mode not in [2,5] and CS.out.vEgo * CV.MS_TO_KPH > 40 and path_plan.modelSpeed < 90:
+      if CS.cruise_set_mode != 5 and CS.out.vEgo * CV.MS_TO_KPH > 40 and path_plan.modelSpeed < 90:
         self.ctrl_speed = self.auto_speed_control(CS, self.ctrl_speed, path_plan) # lead, curve speed
 
       btn_signal = self.ascc_button_control(CS, self.ctrl_speed)

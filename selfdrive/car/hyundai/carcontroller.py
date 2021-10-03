@@ -175,6 +175,7 @@ class CarController():
 
     self.cc_timer = 0
     self.on_speed_control = False
+    self.vFuture = 0
 
     if CP.lateralTuning.which() == 'pid':
       self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(CP.lateralTuning.pid.kpV[1], CP.lateralTuning.pid.kiV[1], CP.lateralTuning.pid.kdV[0], CP.lateralTuning.pid.kf)
@@ -203,8 +204,8 @@ class CarController():
 
     param = self.p
 
+    self.vFuture = v_future
     path_plan = self.NC.update_lateralPlan()
-    self.on_speed_control = self.NC.onSpeedControl
     if frame % 10 == 0:
       self.model_speed = path_plan.modelSpeed
 
@@ -399,6 +400,7 @@ class CarController():
     elif self.last_lead_distance != 0:
       self.last_lead_distance = 0
     elif self.opkr_variablecruise and CS.out.cruiseState.accActive and CS.out.cruiseState.modeSel > 0:
+      self.on_speed_control = self.NC.onSpeedControl
       btn_signal = self.NC.update(CS, path_plan)
       if btn_signal != None:
         can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, btn_signal)) if not self.longcontrol \
@@ -422,6 +424,7 @@ class CarController():
         else:
           self.cruise_gap_adjusting = False
     else:
+      self.on_speed_control = False
       self.cruise_gap_adjusting = False
 
     if CS.cruise_buttons == 4:
@@ -451,7 +454,7 @@ class CarController():
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL)) if not self.longcontrol \
          else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL, clu11_speed, CS.CP.sccBus))  # auto res
         self.res_speed = int(CS.clu_Vanz*1.1)
-        self.res_speed_timer = 350
+        self.res_speed_timer = 300
       elif self.opkr_cruise_auto_res_option == 1:
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.SET_DECEL)) if not self.longcontrol \
          else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.SET_DECEL, clu11_speed, CS.CP.sccBus)) # auto res but set_decel to set current speed
