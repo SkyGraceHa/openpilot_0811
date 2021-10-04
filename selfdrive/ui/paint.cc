@@ -1203,7 +1203,7 @@ static void ui_draw_blindspot_mon(UIState *s) {
       scene.blindspot_blinkingrate -= 6;
       if(scene.blindspot_blinkingrate<0) scene.blindspot_blinkingrate = 120;
       if (scene.blindspot_blinkingrate>=60) {
-        car_valid_alpha = 100;
+        car_valid_alpha = 150;
       } else {
         car_valid_alpha = 0;
       }
@@ -1211,10 +1211,10 @@ static void ui_draw_blindspot_mon(UIState *s) {
       scene.blindspot_blinkingrate = 120;
     }
     if(car_valid_left) {
-      ui_fill_rect(s->vg, rect_l, COLOR_ORANGE_ALPHA(car_valid_alpha), 0);
+      ui_fill_rect(s->vg, rect_l, COLOR_RED_ALPHA(car_valid_alpha), 0);
     }
     if(car_valid_right) {
-      ui_fill_rect(s->vg, rect_r, COLOR_ORANGE_ALPHA(car_valid_alpha), 0);
+      ui_fill_rect(s->vg, rect_r, COLOR_RED_ALPHA(car_valid_alpha), 0);
     }
   }
 }
