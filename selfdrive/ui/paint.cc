@@ -228,74 +228,75 @@ static void ui_draw_world(UIState *s) {
   nvgResetScissor(s->vg);
 }
 
-// TPMS code added from Neokii
-static NVGcolor get_tpms_color(float tpms) {
-    if(tpms < 30 || tpms > 45) // N/A
-        return nvgRGBA(255, 255, 255, 200);
-    if(tpms < 33 || tpms > 42)
-        return nvgRGBA(255, 90, 90, 200);
-    return nvgRGBA(255, 255, 255, 200);
-}
+// TPMS code added from OPKR
+static void ui_draw_tpms(UIState *s) {
+  const UIScene &scene = s->scene;
+  char tpmsFl[64];
+  char tpmsFr[64];
+  char tpmsRl[64];
+  char tpmsRr[64];
+  int viz_tpms_w = 180;
+  int viz_tpms_h = 160;
+  int viz_tpms_x = s->fb_w - viz_tpms_w - bdr_s;
+  int viz_tpms_y = s->fb_h - bdr_s - 310;
+  float maxv = 0;
+  float minv = 300;
+  const Rect rect = {viz_tpms_x, viz_tpms_y, viz_tpms_w, viz_tpms_h};
 
-static std::string get_tpms_text(float tpms) {
-    if(tpms < 5 || tpms > 60)
-        return "";
+  if (maxv < scene.tpmsPressureFl) {maxv = scene.tpmsPressureFl;}
+  if (maxv < scene.tpmsPressureFr) {maxv = scene.tpmsPressureFr;}
+  if (maxv < scene.tpmsPressureRl) {maxv = scene.tpmsPressureRl;}
+  if (maxv < scene.tpmsPressureRr) {maxv = scene.tpmsPressureRr;}
+  if (minv > scene.tpmsPressureFl) {minv = scene.tpmsPressureFl;}
+  if (minv > scene.tpmsPressureFr) {minv = scene.tpmsPressureFr;}
+  if (minv > scene.tpmsPressureRl) {minv = scene.tpmsPressureRl;}
+  if (minv > scene.tpmsPressureRr) {minv = scene.tpmsPressureRr;}
 
-    char str[32];
-    snprintf(str, sizeof(str), "%.0f", round(tpms));
-    return std::string(str);
-}
+  // Draw Border
+  ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(100), 7, 20.);
+  // Draw Background
+  if ((maxv - minv) > 3) {
+    ui_fill_rect(s->vg, rect, COLOR_RED_ALPHA(80), 20);
+  } else {
+    ui_fill_rect(s->vg, rect, COLOR_BLACK_ALPHA(80), 20);
+  }
 
-static void ui_draw_tpms(UIState *s)
-{
-    auto car_state = (*s->sm)["carState"].getCarState();
-    auto tpms = car_state.getTpms();
-
-    const float fl = tpms.getFl();
-    const float fr = tpms.getFr();
-    const float rl = tpms.getRl();
-    const float rr = tpms.getRr();
-
-    const int w = 55;
-    const int h = 123;
-    int x = 1920 - 160;
-    int y = 740;
-
-    const Rect rect = {x - w - 10, y - 5, w * 3 + 20, h + 10};
-
-    // Draw Border & Background
-    if (fl < 30 || fr < 30 || rl < 30 || rr < 30 || fl > 45 || fr > 45 || rl > 45 || rr > 45) {
-      ui_draw_rect(s->vg, rect, COLOR_RED_ALPHA(200), 10, 20.);
-      ui_fill_rect(s->vg, rect, COLOR_RED_ALPHA(50), 20);
-    } else if (fl < 33 || fr < 33 || rl < 33 || rr < 33 || fl > 42 || fr > 42 || rl > 42 || rr > 42) {
-      ui_draw_rect(s->vg, rect, COLOR_ORANGE_ALPHA(200), 10, 20.);
-      ui_fill_rect(s->vg, rect, COLOR_ORANGE_ALPHA(50), 20);
-    } else {
-      ui_draw_rect(s->vg, rect, COLOR_GREEN_ALPHA(200), 10, 20.);
-      ui_fill_rect(s->vg, rect, COLOR_GREEN_ALPHA(50), 20);
-    }
-
-    nvgBeginPath(s->vg);
-    ui_draw_image(s, {x, y, w, h}, "tire_pressure", 0.8f);
-
-    nvgFontSize(s->vg, 40);
-    nvgFontFace(s->vg, "sans-bold");
-
-    nvgTextAlign(s->vg, NVG_ALIGN_RIGHT);
-    nvgFillColor(s->vg, get_tpms_color(fl));
-    nvgText(s->vg, x-5, y+50, get_tpms_text(fl).c_str(), NULL);
-
-    nvgTextAlign(s->vg, NVG_ALIGN_LEFT);
-    nvgFillColor(s->vg, get_tpms_color(fr));
-    nvgText(s->vg, x+w+5, y+50, get_tpms_text(fr).c_str(), NULL);
-
-    nvgTextAlign(s->vg, NVG_ALIGN_RIGHT);
-    nvgFillColor(s->vg, get_tpms_color(rl));
-    nvgText(s->vg, x-5, y+h-10, get_tpms_text(rl).c_str(), NULL);
-
-    nvgTextAlign(s->vg, NVG_ALIGN_LEFT);
-    nvgFillColor(s->vg, get_tpms_color(rr));
-    nvgText(s->vg, x+w+5, y+h-10, get_tpms_text(rr).c_str(), NULL);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
+  const int pos_x = viz_tpms_x + (viz_tpms_w / 2);
+  const int pos_y = viz_tpms_y + 45;
+  ui_draw_text(s, pos_x, pos_y, "TPMS", 40, COLOR_WHITE_ALPHA(180), "sans-regular");
+  snprintf(tpmsFl, sizeof(tpmsFl), "%.1f", scene.tpmsPressureFl);
+  snprintf(tpmsFr, sizeof(tpmsFr), "%.1f", scene.tpmsPressureFr);
+  snprintf(tpmsRl, sizeof(tpmsRl), "%.1f", scene.tpmsPressureRl);
+  snprintf(tpmsRr, sizeof(tpmsRr), "%.1f", scene.tpmsPressureRr);
+  if (scene.tpmsPressureFl < 34) {
+    ui_draw_text(s, pos_x-45, pos_y+50, tpmsFl, 50, COLOR_RED, "sans-bold");
+  } else if (scene.tpmsPressureFl > 50) {
+    ui_draw_text(s, pos_x-45, pos_y+50, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  } else {
+    ui_draw_text(s, pos_x-45, pos_y+50, tpmsFl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  }
+  if (scene.tpmsPressureFr < 34) {
+    ui_draw_text(s, pos_x+45, pos_y+50, tpmsFr, 50, COLOR_RED, "sans-bold");
+  } else if (scene.tpmsPressureFr > 50) {
+    ui_draw_text(s, pos_x+45, pos_y+50, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  } else {
+    ui_draw_text(s, pos_x+45, pos_y+50, tpmsFr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  }
+  if (scene.tpmsPressureRl < 34) {
+    ui_draw_text(s, pos_x-45, pos_y+100, tpmsRl, 50, COLOR_RED, "sans-bold");
+  } else if (scene.tpmsPressureRl > 50) {
+    ui_draw_text(s, pos_x-45, pos_y+100, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  } else {
+    ui_draw_text(s, pos_x-45, pos_y+100, tpmsRl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  }
+  if (scene.tpmsPressureRr < 34) {
+    ui_draw_text(s, pos_x+45, pos_y+100, tpmsRr, 50, COLOR_RED, "sans-bold");
+  } else if (scene.tpmsPressureRr > 50) {
+    ui_draw_text(s, pos_x+45, pos_y+100, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  } else {
+    ui_draw_text(s, pos_x+45, pos_y+100, tpmsRr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+  }
 }
 
 static void ui_draw_standstill(UIState *s) {
@@ -360,6 +361,9 @@ static void ui_draw_debug(UIState *s) {
       if (scene.liveNaviData.opkrspeedlimitdist) ui_print(s, ui_viz_rx, ui_viz_ry+600, "DS:%.0f", scene.liveNaviData.opkrspeedlimitdist);
       if (scene.liveNaviData.opkrturninfo) ui_print(s, ui_viz_rx, ui_viz_ry+640, "TI:%.0f", scene.liveNaviData.opkrturninfo);
       if (scene.liveNaviData.opkrdisttoturn) ui_print(s, ui_viz_rx, ui_viz_ry+680, "DT:%.0f", scene.liveNaviData.opkrdisttoturn);
+    } else if (!scene.map_is_running && (*s->sm)["carState"].getCarState().getSafetySign() > 0) {
+      ui_print(s, ui_viz_rx, ui_viz_ry+520, "SL:%.0f", (*s->sm)["carState"].getCarState().getSafetySign());
+      ui_print(s, ui_viz_rx, ui_viz_ry+560, "DS:%.0f", (*s->sm)["carState"].getCarState().getSafetyDist());
     }
     nvgFontSize(s->vg, 37);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
@@ -662,52 +666,12 @@ static void ui_draw_vision_speed(UIState *s) {
 }
 
 static void ui_draw_vision_event(UIState *s) {
-  const int center_x = (bdr_s) + 2 * (184 + 15);
-  const int center_y = int(bdr_s);
+  const int viz_event_w = 220;
+  const int viz_event_x = s->fb_w - (viz_event_w + bdr_s);
+  const int viz_event_y = bdr_s;
 
-  if (!s->scene.comma_stock_ui){
-    // 버스전용차로( 246 )일 경우
-    if (s->scene.liveNaviData.opkrspeedsign == 246) {ui_draw_image(s, {center_x, center_y, 200, 200}, "bus_only", 0.8f);} 
-    // 차선변경금지( 198 || 199 || 249 )일 경우
-    if (s->scene.liveNaviData.opkrspeedsign == 198 || s->scene.liveNaviData.opkrspeedsign == 199 || s->scene.liveNaviData.opkrspeedsign == 249) {
-      ui_draw_image(s, {center_x, center_y, 200, 200}, "do_not_change_lane", 0.8f);}
-    // 구간단속구간( 165 )일 경우
-    if (s->scene.liveNaviData.opkrspeedsign == 165 && s->scene.liveNaviData.opkrspeedlimit != 0) { 
-      if (s->scene.liveNaviData.opkrspeedlimit < 70) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_60", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 80) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_70", 0.8f);} 
-      else if (s->scene.liveNaviData.opkrspeedlimit < 90) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_80", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 100) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_90", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 110) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_100", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 120) {ui_draw_image(s, {center_x, center_y, 200, 200}, "section_110", 0.8f);}
-    } 
-    // 일반적인 과속단속구간( 135 || 150 || 200 || 231)일 경우  
-    if ((s->scene.liveNaviData.opkrspeedsign == 135 || s->scene.liveNaviData.opkrspeedsign == 150 || s->scene.liveNaviData.opkrspeedsign == 200 || s->scene.liveNaviData.opkrspeedsign == 231) && s->scene.liveNaviData.opkrspeedlimit > 29) {
-      if (s->scene.liveNaviData.opkrspeedlimit < 40) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_30", 0.8f);
-                                                    ui_draw_image(s, {960-250, 540-250, 500, 500}, "speed_S30", 0.2f);} //중앙 스쿨존 이미지
-      else if (s->scene.liveNaviData.opkrspeedlimit < 50) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_40", 0.8f);} 
-      else if (s->scene.liveNaviData.opkrspeedlimit < 60) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_50", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 70) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_60", 0.8f);} 
-      else if (s->scene.liveNaviData.opkrspeedlimit < 80) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_70", 0.8f);} 
-      else if (s->scene.liveNaviData.opkrspeedlimit < 90) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_80", 0.8f);} 
-      else if (s->scene.liveNaviData.opkrspeedlimit < 100) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_90", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 110) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_100", 0.8f);}
-      else if (s->scene.liveNaviData.opkrspeedlimit < 120) {ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_110", 0.8f);}
-    }
-    //가변구간( 195 || 197) 일 경우
-    if (s->scene.liveNaviData.opkrspeedsign == 195 || s->scene.liveNaviData.opkrspeedsign == 197) {
-      ui_draw_image(s, {center_x, center_y, 200, 200}, "speed_var", 0.8f); }
-    //과속방지턱( 124 ) 일 경우
-    if (s->scene.liveNaviData.opkrspeedsign == 124) {
-      ui_draw_image(s, {960-175, 540-175, 350, 350}, "speed_bump", 0.2f); }
-  }
-  
-  //draw compass by opkr and re-designed by hoya
-  if (s->scene.gpsAccuracyUblox != 0.00 && !s->scene.comma_stock_ui) {
-    const int radius = 185;
-    const int compass_x = 1920 / 2 - 20;
-    const int compass_y = 1080 - 40;
-    ui_draw_circle_image_rotation(s, compass_x, compass_y, radius + 40, "direction", nvgRGBA(0, 0, 0, 0), 0.7f, -(s->scene.bearingUblox));
-    ui_draw_circle_image_rotation(s, compass_x, compass_y, radius + 40, "compass", nvgRGBA(0, 0, 0, 0), 0.8f);
+  if (s->scene.liveNaviData.opkrspeedsign == 124 && s->scene.limitSpeedCamera == 0 && s->scene.limitSpeedCameraDist == 0 && !s->scene.comma_stock_ui) {
+    ui_draw_image(s, {s->fb_w/2 - 500/2, s->fb_h/2 - 500/2, 500, 500}, "speed_bump", 0.35f);
   }
 
   // draw steering wheel
@@ -1074,6 +1038,88 @@ static void bb_ui_draw_UI(UIState *s) {
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
 }
 
+static void draw_safetysign(UIState *s) {
+  const int diameter = 185;
+  const int diameter2 = 170;
+  const int s_center_x = bdr_s + 490;
+  const int s_center_y = bdr_s + 100;
+  
+  const int d_center_x = s_center_x;
+  const int d_center_y = s_center_y + 155;
+  const int d_width = 220;
+  const int d_height = 70;
+  int opacity = 0;
+
+  const Rect rect_s = {s_center_x - diameter/2, s_center_y - diameter/2, diameter, diameter};
+  const Rect rect_si = {s_center_x - diameter2/2, s_center_y - diameter2/2, diameter2, diameter2};
+  const Rect rect_d = {d_center_x - d_width/2, d_center_y - d_height/2, d_width, d_height};
+  char safetySpeed[16];
+  char safetyDist[32];
+  int safety_speed = s->scene.limitSpeedCamera;
+  float safety_dist = s->scene.limitSpeedCameraDist;
+  //int safety_speed = s->scene.liveNaviData.opkrspeedlimit;
+  //float safety_dist = s->scene.liveNaviData.opkrspeedlimitdist;
+
+  snprintf(safetySpeed, sizeof(safetySpeed), "%d", safety_speed);
+  if (safety_dist >= 1000) {
+    snprintf(safetyDist, sizeof(safetyDist), "%.2fkm", safety_dist/1000);
+  } else {
+    snprintf(safetyDist, sizeof(safetyDist), "%.0fm", safety_dist);
+  }
+  opacity = safety_dist>600 ? 0 : (600 - safety_dist) * 0.425;
+
+  if (safety_speed > 29 && !s->scene.comma_stock_ui) {
+    ui_fill_rect(s->vg, rect_si, COLOR_WHITE_ALPHA(200), diameter2/2);
+    ui_draw_rect(s->vg, rect_s, COLOR_RED_ALPHA(200), 20, diameter/2);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    if (safety_speed < 100) {
+      ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), safetySpeed, 140, COLOR_BLACK_ALPHA(200), "sans-bold");
+    } else {
+      ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), safetySpeed, 100, COLOR_BLACK_ALPHA(200), "sans-bold");
+    }
+    ui_fill_rect(s->vg, rect_d, COLOR_RED_ALPHA(opacity), 20.);
+    ui_draw_rect(s->vg, rect_d, COLOR_WHITE_ALPHA(200), 8, 20);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    ui_draw_text(s, rect_d.centerX(), rect_d.centerY(), safetyDist, 65, COLOR_WHITE_ALPHA(200), "sans-bold");
+  } else if ((s->scene.mapSign == 195 || s->scene.mapSign == 197) && safety_speed == 0 && safety_dist != 0 && !s->scene.comma_stock_ui) {
+    ui_fill_rect(s->vg, rect_si, COLOR_WHITE_ALPHA(200), diameter2/2);
+    ui_draw_rect(s->vg, rect_s, COLOR_RED_ALPHA(200), 20, diameter/2);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), "가변\n구간", 90, COLOR_BLACK_ALPHA(200), "sans-bold");
+
+    ui_fill_rect(s->vg, rect_d, COLOR_RED_ALPHA(opacity), 20.);
+    ui_draw_rect(s->vg, rect_d, COLOR_WHITE_ALPHA(200), 8, 20);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    ui_draw_text(s, rect_d.centerX(), rect_d.centerY(), safetyDist, 65, COLOR_WHITE_ALPHA(200), "sans-bold");
+  }
+}
+
+static void draw_compass(UIState *s) {
+  //draw compass by opkr
+  if (s->scene.gpsAccuracyUblox != 0.00) {
+    const int compass_size = 140;
+    const int compass_x = s->fb_w - compass_size - 35;
+    const int compass_y = 1080 - compass_size - 35;
+    const int from_center = 55;    
+    const Rect rect = {compass_x, compass_y, compass_size, compass_size};
+    ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(0), 0, 0);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    ui_draw_text(s, rect.centerX()+from_center, rect.centerY(), "E", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
+    ui_draw_text(s, rect.centerX()-from_center, rect.centerY(), "W", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
+    ui_draw_text(s, rect.centerX(), rect.centerY()+from_center, "S", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
+    ui_draw_text(s, rect.centerX(), rect.centerY()-from_center, "N", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
+    float niddle_rotation = s->scene.bearingUblox/180*3.141592;
+    nvgSave( s->vg );
+    nvgTranslate(s->vg, compass_x+compass_size/2, compass_y+compass_size/2);
+    nvgRotate(s->vg, -niddle_rotation);
+    nvgFontFace(s->vg, "sans-bold");
+    nvgFontSize(s->vg, 80);
+    nvgFillColor(s->vg, COLOR_GREEN_ALPHA(200));
+    nvgText(s->vg, 0, 0, "↑", NULL);
+    nvgRestore(s->vg);
+  }
+}
+
 static void draw_navi_button(UIState *s) {
   int btn_w = 140;
   int btn_h = 140;
@@ -1154,7 +1200,6 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_vision_event(s); //과속카메라 속도
 
   if (!s->scene.comma_stock_ui) {
-    ui_draw_vision_cameradist(s); //과속카메라 거리   
     ui_draw_vision_maxspeed(s);
     ui_draw_vision_cruise_speed(s);
   } else {
@@ -1166,6 +1211,8 @@ static void ui_draw_vision_header(UIState *s) {
     bb_ui_draw_UI(s);
     ui_draw_tpms(s);
     draw_navi_button(s);
+    draw_safetysign(s);
+    draw_compass(s);
   }
   if (s->scene.end_to_end && !s->scene.comma_stock_ui) {
     draw_laneless_button(s);
@@ -1176,22 +1223,23 @@ static void ui_draw_vision_header(UIState *s) {
 }
 
 //blind spot warning by OPKR
-static void ui_draw_vision_car(UIState *s) {
+static void ui_draw_blindspot_mon(UIState *s) {
   UIScene &scene = s->scene;
-  const int car_size = 350;
-  const int car_x_left = (s->fb_w/2 - 400);
-  const int car_x_right = (s->fb_w/2 + 400);
-  const int car_y = 500;
-  const int car_img_size_w = (car_size * 1);
-  const int car_img_size_h = (car_size * 1);
-  const int car_img_x_left = (car_x_left - (car_img_size_w / 2));
-  const int car_img_x_right = (car_x_right - (car_img_size_w / 2));
-  const int car_img_y = (car_y - (car_size / 4) + 150);
+  const int width = 70;
+  const int height = s->fb_h;
+
+  const int left_x = 0;
+  const int left_y = 0;
+  const int right_x = s->fb_w - width;
+  const int right_y = 0;
+
+  const Rect rect_l = {left_x, left_y, width, height};
+  const Rect rect_r = {right_x, right_y, width, height};
 
   int car_valid_status = 0;
   bool car_valid_left = scene.leftblindspot;
   bool car_valid_right = scene.rightblindspot;
-  float car_img_alpha;
+  int car_valid_alpha;
   if (scene.nOpkrBlindSpotDetect) {
     if (scene.car_valid_status_changed != car_valid_status) {
       scene.blindspot_blinkingrate = 114;
@@ -1210,19 +1258,18 @@ static void ui_draw_vision_car(UIState *s) {
       scene.blindspot_blinkingrate -= 6;
       if(scene.blindspot_blinkingrate<0) scene.blindspot_blinkingrate = 120;
       if (scene.blindspot_blinkingrate>=60) {
-        car_img_alpha = 0.6f;
+        car_valid_alpha = 100;
       } else {
-        car_img_alpha = 0.0f;
+        car_valid_alpha = 0;
       }
     } else {
       scene.blindspot_blinkingrate = 120;
     }
-
     if(car_valid_left) {
-      ui_draw_image(s, {car_img_x_left, car_img_y, car_img_size_w, car_img_size_h}, "car_left", car_img_alpha);
+      ui_fill_rect(s->vg, rect_l, COLOR_ORANGE_ALPHA(car_valid_alpha), 0);
     }
     if(car_valid_right) {
-      ui_draw_image(s, {car_img_x_right, car_img_y, car_img_size_w, car_img_size_h}, "car_right", car_img_alpha);
+      ui_fill_rect(s->vg, rect_r, COLOR_ORANGE_ALPHA(car_valid_alpha), 0);
     }
   }
 }
@@ -1420,6 +1467,7 @@ static void ui_draw_vision(UIState *s) {
   if ((*s->sm)["controlsState"].getControlsState().getAlertSize() == cereal::ControlsState::AlertSize::NONE && !scene->comma_stock_ui) {
     ui_draw_vision_footer(s);
     ui_draw_vision_car(s);
+    ui_draw_blindspot_mon(s);    
   }
   if (scene->live_tune_panel_enable) {
     ui_draw_live_tune_panel(s);
@@ -1496,44 +1544,7 @@ void ui_nvg_init(UIState *s) {
   std::vector<std::pair<const char *, const char *>> images = {
     {"wheel", "../assets/img_chffr_wheel.png"},
     {"driver_face", "../assets/img_driver_face.png"},
-    {"speed_S30", "../assets/addon/img/img_S30_speedahead.png"},
-    {"speed_30", "../assets/addon/img/img_30_speedahead.png"},
-    {"speed_40", "../assets/addon/img/img_40_speedahead.png"},
-    {"speed_50", "../assets/addon/img/img_50_speedahead.png"},
-    {"speed_60", "../assets/addon/img/img_60_speedahead.png"},
-    {"speed_70", "../assets/addon/img/img_70_speedahead.png"},
-    {"speed_80", "../assets/addon/img/img_80_speedahead.png"},
-    {"speed_90", "../assets/addon/img/img_90_speedahead.png"},
-    {"speed_100", "../assets/addon/img/img_100_speedahead.png"},
-    {"speed_110", "../assets/addon/img/img_110_speedahead.png"},
-    {"section_60", "..//assets/addon/img/img_60_section.png"},
-    {"section_70", "..//assets/addon/img/img_70_section.png"},
-    {"section_80", "..//assets/addon/img/img_80_section.png"},
-    {"section_90", "..//assets/addon/img/img_90_section.png"},
-    {"section_100", "..//assets/addon/img/img_100_section.png"},
-    {"section_110", "..//assets/addon/img/img_110_section.png"}, 
-    {"speed_var", "../assets/addon/img/img_var_speedahead.png"},
     {"speed_bump", "../assets/addon/img/img_speed_bump.png"},
-    {"bus_only", "../assets/addon/img/img_bus_only.png"},
-    {"do_not_change_lane", "../assets/addon/img/do_not_change_lane.png"},
-    {"car_left", "../assets/addon/img/img_car_left.png"},
-    {"car_right", "../assets/addon/img/img_car_right.png"},
-    {"compass", "../assets/addon/img/img_compass.png"},
-    {"direction", "../assets/addon/img/img_direction.png"},
-    {"brake", "../assets/addon/img/img_brake_disc.png"},      
-    {"autohold_warning", "../assets/addon/img/img_autohold_warning.png"},
-    {"autohold_active", "../assets/addon/img/img_autohold_active.png"}, 
-    {"lead_car_dist_0", "../assets/addon/img/car_dist_0.png"},
-    {"lead_car_dist_1", "../assets/addon/img/car_dist_1.png"},    
-    {"lead_car_dist_2", "../assets/addon/img/car_dist_2.png"},
-    {"lead_car_dist_3", "../assets/addon/img/car_dist_3.png"},
-    {"lead_car_dist_4", "../assets/addon/img/car_dist_4.png"},
-    {"custom_lead_vision", "../assets/addon/img/custom_lead_vision.png"},
-    {"custom_lead_radar", "../assets/addon/img/custom_lead_radar.png"},
-    {"lead_radar", "../assets/addon/img/lead_radar.png"},
-    {"lead_under_radar", "../assets/addon/img/lead_underline_radar.png"},
-    {"lead_under_camera", "../assets/addon/img/lead_underline_camera.png"},
-    {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
     s->images[name] = nvgCreateImage(s->vg, file, 1);
