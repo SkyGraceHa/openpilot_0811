@@ -1222,12 +1222,8 @@ static void ui_draw_blindspot_mon(UIState *s) {
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
   ui_draw_vision_scc_gap(s);
-  #if UI_FEATURE_BRAKE
-    ui_draw_vision_brake(s);
-  #endif  
-  #if UI_FEATURE_AUTOHOLD
-    ui_draw_vision_autohold(s);
-  #endif
+  ui_draw_vision_brake(s);
+  ui_draw_vision_autohold(s);
 }
 
 // draw date/time
