@@ -236,9 +236,9 @@ static void ui_draw_tpms(UIState *s) {
   char tpmsRl[64];
   char tpmsRr[64];
   int viz_tpms_w = 180;
-  int viz_tpms_h = 160;
+  int viz_tpms_h = 150;
   int viz_tpms_x = s->fb_w - viz_tpms_w - bdr_s;
-  int viz_tpms_y = s->fb_h - bdr_s - 310;
+  int viz_tpms_y = s->fb_h - bdr_s - 300;
   float maxv = 0;
   float minv = 300;
   const Rect rect = {viz_tpms_x, viz_tpms_y, viz_tpms_w, viz_tpms_h};
@@ -257,45 +257,43 @@ static void ui_draw_tpms(UIState *s) {
   // Draw Background
   if ((maxv - minv) > 3) {
     ui_fill_rect(s->vg, rect, COLOR_RED_ALPHA(80), 20);
-  } else {
-    ui_fill_rect(s->vg, rect, COLOR_BLACK_ALPHA(80), 20);
   }
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   const int pos_x = viz_tpms_x + (viz_tpms_w / 2);
-  const int pos_y = viz_tpms_y + 45;
+  const int pos_y = viz_tpms_y + 40;
   ui_draw_text(s, pos_x, pos_y, "TPMS", 40, COLOR_WHITE_ALPHA(180), "sans-regular");
   snprintf(tpmsFl, sizeof(tpmsFl), "%.1f", scene.tpmsPressureFl);
   snprintf(tpmsFr, sizeof(tpmsFr), "%.1f", scene.tpmsPressureFr);
   snprintf(tpmsRl, sizeof(tpmsRl), "%.1f", scene.tpmsPressureRl);
   snprintf(tpmsRr, sizeof(tpmsRr), "%.1f", scene.tpmsPressureRr);
   if (scene.tpmsPressureFl < 34) {
-    ui_draw_text(s, pos_x-45, pos_y+50, tpmsFl, 50, COLOR_RED, "sans-bold");
+    ui_draw_text(s, pos_x-45, pos_y+45, tpmsFl, 50, COLOR_RED, "sans-bold");
   } else if (scene.tpmsPressureFl > 50) {
-    ui_draw_text(s, pos_x-45, pos_y+50, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x-45, pos_y+45, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   } else {
-    ui_draw_text(s, pos_x-45, pos_y+50, tpmsFl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x-45, pos_y+45, tpmsFl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   }
   if (scene.tpmsPressureFr < 34) {
-    ui_draw_text(s, pos_x+45, pos_y+50, tpmsFr, 50, COLOR_RED, "sans-bold");
+    ui_draw_text(s, pos_x+45, pos_y+45, tpmsFr, 50, COLOR_RED, "sans-bold");
   } else if (scene.tpmsPressureFr > 50) {
-    ui_draw_text(s, pos_x+45, pos_y+50, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x+45, pos_y+45, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   } else {
-    ui_draw_text(s, pos_x+45, pos_y+50, tpmsFr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x+45, pos_y+45, tpmsFr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   }
   if (scene.tpmsPressureRl < 34) {
-    ui_draw_text(s, pos_x-45, pos_y+100, tpmsRl, 50, COLOR_RED, "sans-bold");
+    ui_draw_text(s, pos_x-45, pos_y+90, tpmsRl, 50, COLOR_RED, "sans-bold");
   } else if (scene.tpmsPressureRl > 50) {
-    ui_draw_text(s, pos_x-45, pos_y+100, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x-45, pos_y+90, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   } else {
-    ui_draw_text(s, pos_x-45, pos_y+100, tpmsRl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x-45, pos_y+90, tpmsRl, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   }
   if (scene.tpmsPressureRr < 34) {
-    ui_draw_text(s, pos_x+45, pos_y+100, tpmsRr, 50, COLOR_RED, "sans-bold");
+    ui_draw_text(s, pos_x+45, pos_y+90, tpmsRr, 50, COLOR_RED, "sans-bold");
   } else if (scene.tpmsPressureRr > 50) {
-    ui_draw_text(s, pos_x+45, pos_y+100, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x+45, pos_y+90, "N/A", 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   } else {
-    ui_draw_text(s, pos_x+45, pos_y+100, tpmsRr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
+    ui_draw_text(s, pos_x+45, pos_y+90, tpmsRr, 50, COLOR_WHITE_ALPHA(200), "sans-semibold");
   }
 }
 
@@ -326,7 +324,7 @@ static void ui_draw_debug(UIState *s) {
   const UIScene &scene = s->scene;
 
   int ui_viz_rx = bdr_s + 190;
-  int ui_viz_ry = bdr_s;
+  int ui_viz_ry = bdr_s + 100;
   int ui_viz_rx_center = s->fb_w/2;
   
   nvgTextAlign(s->vg, NVG_ALIGN_MIDDLE | NVG_ALIGN_MIDDLE);
@@ -368,11 +366,11 @@ static void ui_draw_debug(UIState *s) {
     nvgFontSize(s->vg, 37);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     if (scene.lateralControlMethod == 0) {
-      ui_print(s, ui_viz_rx_center, ui_viz_ry+305, "PID");
+      ui_print(s, ui_viz_rx_center, bdr_s+305, "PID");
     } else if (scene.lateralControlMethod == 1) {
-      ui_print(s, ui_viz_rx_center, ui_viz_ry+305, "INDI");
+      ui_print(s, ui_viz_rx_center, bdr_s+305, "INDI");
     } else if (scene.lateralControlMethod == 2) {
-      ui_print(s, ui_viz_rx_center, ui_viz_ry+305, "LQR");
+      ui_print(s, ui_viz_rx_center, bdr_s+305, "LQR");
     }
   }
 }
@@ -529,6 +527,11 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 }
 
 static void ui_draw_vision_cruise_speed(UIState *s) {
+  const int SET_SPEED_NA = 255;
+  float maxspeed = s->scene.controls_state.getVCruise();
+  const bool is_cruise_set = maxspeed != 0 && maxspeed != SET_SPEED_NA;
+  if (is_cruise_set && !s->scene.is_metric) { maxspeed *= 0.6225; }
+
   float cruise_speed = s->scene.vSetDis;
   if (!s->scene.is_metric) { cruise_speed *= 0.621371; }
   s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 29 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
@@ -552,9 +555,13 @@ static void ui_draw_vision_cruise_speed(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   if (s->scene.limitSpeedCamera > 29) {
     ui_draw_text(s, rect.centerX(), bdr_s+65, "제한속도", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-regular");
+  } else if (is_cruise_set) {
+    const std::string maxspeed_str = std::to_string((int)std::nearbyint(maxspeed));
+    ui_draw_text(s, rect.centerX(), bdr_s+65, maxspeed_str.c_str(), 26 * 2.8, COLOR_WHITE, "sans-bold");
   } else {
-    ui_draw_text(s, rect.centerX(), bdr_s+65, "크루즈", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-regular");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, "-", 26 * 2.8, COLOR_WHITE_ALPHA(100), "sans-semibold");
   }
+
   const std::string cruise_speed_str = std::to_string((int)std::nearbyint(cruise_speed));
   if (cruise_speed >= 30 && s->scene.controls_state.getEnabled()) {
     ui_draw_text(s, rect.centerX(), bdr_s+165, cruise_speed_str.c_str(), 48 * 2.3, COLOR_WHITE, "sans-bold");
@@ -1041,10 +1048,10 @@ static void bb_ui_draw_UI(UIState *s) {
 static void draw_safetysign(UIState *s) {
   const int diameter = 185;
   const int diameter2 = 170;
-  const int s_center_x = bdr_s + 490;
+  int s_center_x = bdr_s + 305 + (s->scene.display_maxspeed_time>0 ? 184 : 0);
   const int s_center_y = bdr_s + 100;
   
-  const int d_center_x = s_center_x;
+  int d_center_x = s_center_x;
   const int d_center_y = s_center_y + 155;
   const int d_width = 220;
   const int d_height = 70;
@@ -1104,18 +1111,18 @@ static void draw_compass(UIState *s) {
     const Rect rect = {compass_x, compass_y, compass_size, compass_size};
     ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(0), 0, 0);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-    ui_draw_text(s, rect.centerX()+from_center, rect.centerY(), "E", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
-    ui_draw_text(s, rect.centerX()-from_center, rect.centerY(), "W", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
-    ui_draw_text(s, rect.centerX(), rect.centerY()+from_center, "S", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
-    ui_draw_text(s, rect.centerX(), rect.centerY()-from_center, "N", 40, COLOR_WHITE_ALPHA(150), "sans-bold");
+    ui_draw_text(s, rect.centerX()+from_center, rect.centerY(), "E", 40, COLOR_WHITE_ALPHA(200), "sans-bold");
+    ui_draw_text(s, rect.centerX()-from_center, rect.centerY(), "W", 40, COLOR_WHITE_ALPHA(200), "sans-bold");
+    ui_draw_text(s, rect.centerX(), rect.centerY()+from_center, "S", 40, COLOR_WHITE_ALPHA(200), "sans-bold");
+    ui_draw_text(s, rect.centerX(), rect.centerY()-from_center, "N", 40, COLOR_WHITE_ALPHA(200), "sans-bold");
     float niddle_rotation = s->scene.bearingUblox/180*3.141592;
     nvgSave( s->vg );
     nvgTranslate(s->vg, compass_x+compass_size/2, compass_y+compass_size/2);
     nvgRotate(s->vg, -niddle_rotation);
     nvgFontFace(s->vg, "sans-bold");
     nvgFontSize(s->vg, 80);
-    nvgFillColor(s->vg, COLOR_GREEN_ALPHA(200));
-    nvgText(s->vg, 0, 0, "↑", NULL);
+    nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
+    nvgText(s->vg, 0, 0, "Δ", NULL);
     nvgRestore(s->vg);
   }
 }
@@ -1200,7 +1207,13 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_vision_event(s); //과속카메라 속도
 
   if (!s->scene.comma_stock_ui) {
-    ui_draw_vision_maxspeed(s);
+    if ((*s->sm)["carState"].getCarState().getCruiseButtons() == 1 || (*s->sm)["carState"].getCarState().getCruiseButtons() == 2) {
+      s->scene.display_maxspeed_time = 300;
+      ui_draw_vision_maxspeed(s);
+    } else if (s->scene.display_maxspeed_time > 0) {
+      s->scene.display_maxspeed_time--;
+      ui_draw_vision_maxspeed(s);
+    }
     ui_draw_vision_cruise_speed(s);
   } else {
     ui_draw_vision_maxspeed_org(s);

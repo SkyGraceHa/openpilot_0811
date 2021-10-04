@@ -5,11 +5,14 @@ import numpy as np
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.values import Buttons
 from common.numpy_fast import clip, interp
+from cereal import log
 import cereal.messaging as messaging
 from common.params import Params
 
 import common.log as trace1
 import common.MoveAvg as mvAvg
+
+LaneChangeState = log.LateralPlan.LaneChangeState
 
 class NaviControl():
   def __init__(self, p=None):
@@ -37,6 +40,7 @@ class NaviControl():
     self.map_speed_control_start = False
     self.onSpeedControl = False
     self.map_speed_dist_prev = 0
+    self.ctrl_speed = 0
 
   def update_lateralPlan(self):
     self.sm.update(0)
@@ -218,21 +222,25 @@ class NaviControl():
 
   def auto_speed_control(self, CS, ctrl_speed, path_plan):
     modelSpeed = path_plan.modelSpeed
-    if CS.cruise_set_mode != 3:
-      vFuture = CS.CP.vFuture
-      ctrl_speed = vFuture
-      if CS.CP.resSpeed:
-        ctrl_speed = CS.CP.resSpeed
-    if CS.gasPressed == self.gasPressed_old:
+    min_control_speed = 20 if CS.is_set_speed_in_mph else 30
+    if CS.driverAcc_time:
+      return CS.clu_Vanz + 3
+    # elif self.gasPressed_old:
+    #   clu_Vanz = CS.clu_Vanz
+    #   ctrl_speed = max(min_control_speed, ctrl_speed, clu_Vanz)
+    #   CS.set_cruise_speed(ctrl_speed)
+    elif CS.CP.resSpeed:
+      ctrl_speed = max(min_control_speed, CS.CP.resSpeed)
       return ctrl_speed
-    elif self.gasPressed_old:
-      clu_Vanz = CS.clu_Vanz
-      ctrl_speed = max(ctrl_speed, clu_Vanz)
-      CS.set_cruise_speed(ctrl_speed)
-    else:
+    elif CS.cruise_set_mode in [1,2,4]:
+      vFuture = CS.CP.vFuture
+      ctrl_speed = max(min_control_speed, vFuture)
+
+    if CS.cruise_set_mode in [1,3,4] and CS.out.vEgo * CV.MS_TO_KPH > 40 and modelSpeed < 90 and \
+     path_plan.laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker):
       ctrl_speed = min(ctrl_speed, interp(modelSpeed, [30, 90], [45, 90])) # curve speed ratio
 
-    self.gasPressed_old = CS.gasPressed
+    # self.gasPressed_old = CS.gasPressed
     return ctrl_speed
 
   def update(self, CS, path_plan):
@@ -244,7 +252,7 @@ class NaviControl():
       kph_set_vEgo = self.get_navi_speed(self.sm , CS, cruiseState_speed) # camspeed
       self.ctrl_speed = min(cruiseState_speed, kph_set_vEgo)
 
-      if CS.cruise_set_mode != 5 and CS.out.vEgo * CV.MS_TO_KPH > 40 and path_plan.modelSpeed < 90:
+      if CS.cruise_set_mode != 5:
         self.ctrl_speed = self.auto_speed_control(CS, self.ctrl_speed, path_plan) # lead, curve speed
 
       btn_signal = self.ascc_button_control(CS, self.ctrl_speed)
