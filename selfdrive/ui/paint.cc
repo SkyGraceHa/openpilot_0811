@@ -1140,7 +1140,7 @@ static void ui_draw_vision_header(UIState *s) {
 
   if (!s->scene.comma_stock_ui) {
     if ((*s->sm)["carState"].getCarState().getCruiseButtons() == 1 || (*s->sm)["carState"].getCarState().getCruiseButtons() == 2) {
-      s->scene.display_maxspeed_time = 300;
+      s->scene.display_maxspeed_time = 100;
       ui_draw_vision_maxspeed(s);
     } else if (s->scene.display_maxspeed_time > 0) {
       s->scene.display_maxspeed_time--;
