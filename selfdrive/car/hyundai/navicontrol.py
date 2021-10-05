@@ -18,7 +18,7 @@ class NaviControl():
   def __init__(self, p=None):
     self.p = p
     
-    self.sm = messaging.SubMaster(['liveNaviData', 'lateralPlan', 'radarState']) 
+    self.sm = messaging.SubMaster(['liveNaviData', 'lateralPlan', 'radarState', 'controlsState']) 
 
     self.btn_cnt = 0
     self.seq_command = 0
@@ -48,7 +48,7 @@ class NaviControl():
 
   def button_status(self, CS):
     if not CS.cruise_active or CS.cruise_buttons != Buttons.NONE: 
-      self.wait_timer2 = 50 
+      self.wait_timer2 = 80 
     elif self.wait_timer2: 
       self.wait_timer2 -= 1
     else:
@@ -85,7 +85,7 @@ class NaviControl():
       if self.target_speed == self.VSetDis:
         self.btn_cnt = 0
         self.seq_command = 3            
-      elif self.btn_cnt > 10:
+      elif self.btn_cnt > 5:
         self.btn_cnt = 0
         self.seq_command = 3
       return btn_signal
@@ -96,7 +96,7 @@ class NaviControl():
       if self.target_speed == self.VSetDis:
         self.btn_cnt = 0
         self.seq_command = 3            
-      elif self.btn_cnt > 10:
+      elif self.btn_cnt > 5:
         self.btn_cnt = 0
         self.seq_command = 3
       return btn_signal
@@ -143,7 +143,7 @@ class NaviControl():
           self.map_speed_block = False
       if self.map_speed > 29:
         cam_distance_calc = 0
-        cam_distance_calc = interp(v_ego_kph, [30, 110], [2.8, 4.0])
+        cam_distance_calc = interp(v_ego_kph, [30, 110], [2.8, 4.0]) if not CS.CP.sccBus != 0 else interp(v_ego_kph, [30, 60, 110], [2.5, 3., 3.8])
         consider_speed = interp((v_ego_kph - self.map_speed), [0, 50], [1, 2.25])
         min_control_dist = interp(self.map_speed, [30, 110], [40, 250])
         final_cam_decel_start_dist = cam_distance_calc*consider_speed*v_ego_kph * (1 + self.safetycam_decel_dist_gain*0.01)
@@ -179,7 +179,7 @@ class NaviControl():
           self.map_speed_block = False
       if self.map_speed > 29:
         cam_distance_calc = 0
-        cam_distance_calc = interp(v_ego_kph, [30, 110], [2.8, 4.0])
+        cam_distance_calc = interp(v_ego_kph, [30, 60, 110], [2.6, 3.2, 4.0])
         consider_speed = interp((v_ego_kph - self.map_speed), [0, 50], [1, 2.25])
         min_control_dist = interp(self.map_speed, [30, 110], [40, 250])
         final_cam_decel_start_dist = cam_distance_calc*consider_speed*v_ego_kph * (1 + self.safetycam_decel_dist_gain*0.01)
@@ -237,13 +237,15 @@ class NaviControl():
       res_speed = max(min_control_speed, CS.CP.resSpeed)
       return min(res_speed, navi_speed)
     elif CS.cruise_set_mode in [1,2,4]:
-      if self.lead_0.status and CS.CP.vFuture >= min_control_speed:
+      if self.lead_0.status and CS.CP.vFuture >= min_control_speed-5:
         dRel = int(self.lead_0.dRel)
         vRel = int(self.lead_0.vRel * CV.MS_TO_KPH)
         if vRel >= -5:
           var_speed = min(CS.CP.vFuture + max(0, dRel*0.2+vRel), navi_speed)
         else:
           var_speed = min(CS.CP.vFuture, navi_speed)
+      elif self.lead_0.status and CS.CP.vFuture < min_control_speed:
+        var_speed = min(CS.CP.vFuture, navi_speed)
       else:
         var_speed = navi_speed
     else:
@@ -264,7 +266,7 @@ class NaviControl():
     if not self.button_status(CS):
       pass
     elif CS.cruise_active:
-      cruiseState_speed = round(CS.out.cruiseState.speed * CV.MS_TO_KPH)
+      cruiseState_speed = self.sm['controlsState'].vCruise
       kph_set_vEgo = self.get_navi_speed(self.sm, CS, cruiseState_speed) # camspeed
       navi_speed = min(cruiseState_speed, kph_set_vEgo)
 
