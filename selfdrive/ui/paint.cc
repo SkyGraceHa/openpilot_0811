@@ -567,7 +567,7 @@ static void ui_draw_vision_speed(UIState *s) {
   const int header_h = 400; 
 
   // turning blinker from kegman, moving signal by OPKR
-  if ((scene.leftBlinker || scene.leftBlinker) && !scene.comma_stock_ui){
+  if ((scene.leftBlinker || scene.rightBlinker) && !scene.comma_stock_ui){
     scene.blinker_blinkingrate -= 5;
     if(scene.blinker_blinkingrate<0) scene.blinker_blinkingrate = 68; // blinker_blinkingrate 는 IG/FL 깜빡이 주기에 거의 맞춤
 
