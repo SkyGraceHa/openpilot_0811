@@ -350,7 +350,7 @@ class CarInterface(CarInterfaceBase):
       events.add(EventName.needBrake)
     if self.CC.cruise_gap_adjusting:
       events.add(EventName.gapAdjusting)
-    if self.CC.on_speed_control:
+    if self.CC.on_speed_control and ret.vEgo > 0.3:
       events.add(EventName.camSpeedDown)
     if self.CC.autohold_popup_timer:
       events.add(EventName.brakeHold)
@@ -367,7 +367,7 @@ class CarInterface(CarInterfaceBase):
       self.CP.resSpeed = self.CC.res_speed
     else:
       self.CP.resSpeed = 0
-    if self.CC.vFuture != 0:
+    if self.CC.vFuture >= 1:
       self.CP.vFuture = self.CC.vFuture
     else:
       self.CP.vFuture = 0
