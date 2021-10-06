@@ -150,6 +150,7 @@ def manager_init():
     ("LiveSteerRatioPercent", "-10"),
     ("StoppingDistAdj", "0"),
     ("ShowError", "0"),
+    ("AutoResLimitTime", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
