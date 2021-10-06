@@ -621,7 +621,7 @@ static void ui_draw_vision_event(UIState *s) {
   if (!s->scene.comma_stock_ui){
     //과속방지턱( 124 ) 일 경우
     if (s->scene.liveNaviData.opkrspeedsign == 124 && s->scene.limitSpeedCamera == 0 && s->scene.limitSpeedCameraDist == 0) {
-      ui_draw_image(s, {960-175, 540-175, 350, 350}, "speed_bump", 0.2f); }
+      ui_draw_image(s, {960-175, 540-150, 350, 350}, "speed_bump", 0.2f); }
     // 버스전용차로( 246 )일 경우
     if (s->scene.liveNaviData.opkrspeedsign == 246) {ui_draw_image(s, {center_x, center_y, 200, 200}, "bus_only", 0.8f);} 
     // 차선변경금지( 198 || 199 || 249 )일 경우
@@ -629,7 +629,7 @@ static void ui_draw_vision_event(UIState *s) {
       ui_draw_image(s, {center_x, center_y, 200, 200}, "do_not_change_lane", 0.8f);}
     // 일반적인 과속단속구간( 135 || 150 || 200 || 231)일 경우 
     if ((s->scene.liveNaviData.opkrspeedsign == 135 || s->scene.liveNaviData.opkrspeedsign == 150 || s->scene.liveNaviData.opkrspeedsign == 200 || s->scene.liveNaviData.opkrspeedsign == 231) && s->scene.liveNaviData.opkrspeedlimit > 29) {
-      if (s->scene.liveNaviData.opkrspeedlimit < 40) {ui_draw_image(s, {960-250, 540-250, 500, 500}, "speed_S30", 0.2f);} //중앙 스쿨존 이미
+      if (s->scene.liveNaviData.opkrspeedlimit < 40) {ui_draw_image(s, {960-250, 540-200, 500, 500}, "speed_S30", 0.2f);} //중앙 스쿨존 이미
     }
   }
 
