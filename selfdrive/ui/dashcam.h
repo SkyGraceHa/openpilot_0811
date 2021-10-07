@@ -159,12 +159,12 @@ void start_capture(UIState *s) {
   files_created++;
 }
 
-bool screen_button_clicked(UIState *s) {
-  if (s->scene.recording) {
-    return true;
-  }
-  return false;
-}
+// bool screen_button_clicked(UIState *s) {
+//   if (s->scene.recording) {
+//     return true;
+//   }
+//   return false;
+// }
 
 void draw_date_time(UIState *s) {
   if (captureState == CAPTURE_STATE_NOT_CAPTURING) {
@@ -271,17 +271,16 @@ void dashcam(UIState *s) {
   if (!s->scene.comma_stock_ui) {
     screen_draw_button(s);
   }
-  if (s->scene.touched && screen_button_clicked(s) && !s->sidebar_view) {
+  if (s->scene.touched) {
     click_elapsed_time = get_time() - click_time;
-
     if (click_elapsed_time > 0) {
       click_time = get_time() + 1;
       screen_toggle_record_state(s);
-      s->scene.touched = !s->scene.touched;
     }
+    s->scene.touched = false;
   }
 
-  if (!s->scene.ignition || !s->scene.controls_state.getEnabled()) {
+  if (!s->scene.ignition && captureState == CAPTURE_STATE_CAPTURING && !s->scene.is_OpenpilotViewEnabled) {
     // Assume car is not in drive so stop recording
     stop_capture();
   }
@@ -293,5 +292,4 @@ void dashcam(UIState *s) {
       stop_capture();
     }
   }
-  s->scene.recording = (captureState != CAPTURE_STATE_NOT_CAPTURING);
 }
