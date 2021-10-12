@@ -326,12 +326,12 @@ static void ui_draw_debug(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_MIDDLE | NVG_ALIGN_MIDDLE);
 
   if (scene.nDebugUi1) {
-    ui_draw_text(s, 360, ui_viz_ry+360, scene.alertTextMsg1.c_str(), 40, COLOR_WHITE_ALPHA(100), "sans-semibold");
-    ui_draw_text(s, 360, ui_viz_ry+400, scene.alertTextMsg2.c_str(), 40, COLOR_WHITE_ALPHA(100), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+520, scene.alertTextMsg1.c_str(), 37, COLOR_WHITE_ALPHA(130), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+560, scene.alertTextMsg2.c_str(), 37, COLOR_WHITE_ALPHA(130), "sans-semibold");
   }
 
   
-  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(125));
+  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(130));
   if (scene.nDebugUi2) {
     //if (scene.gpsAccuracyUblox != 0.00) {
     //  nvgFontSize(s->vg, 34);
