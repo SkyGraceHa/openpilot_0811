@@ -326,8 +326,8 @@ static void ui_draw_debug(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_MIDDLE | NVG_ALIGN_MIDDLE);
 
   if (scene.nDebugUi1) {
-    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+480, scene.alertTextMsg1.c_str(), 37, COLOR_WHITE_ALPHA(130), "sans-semibold");
-    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+520, scene.alertTextMsg2.c_str(), 37, COLOR_WHITE_ALPHA(130), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+480, scene.alertTextMsg1.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+520, scene.alertTextMsg2.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
   }
 
   
@@ -455,7 +455,7 @@ static void ui_draw_vision_brake(UIState *s) {
 
 static void ui_draw_vision_autohold(UIState *s) {
   const UIScene *scene = &s->scene;
-  int autohold = scene->car_state.getAutoHold();
+  int autohold = scene->car_state.getBrakeHold();
   if(autohold < 0)
     return;
 
