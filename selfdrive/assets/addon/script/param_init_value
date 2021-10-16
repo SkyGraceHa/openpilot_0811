@@ -36,9 +36,9 @@ SteerLimitTimerAdj:100
 TireStiffnessFactorAdj:100
 SteerMaxBaseAdj:384
 SteerMaxAdj:384
-SteerDeltaUpBaseAdj:3
+SteerDeltaUpBaseAdj:2
 SteerDeltaUpAdj:3
-SteerDeltaDownBaseAdj:7
+SteerDeltaDownBaseAdj:4
 SteerDeltaDownAdj:7
 SteerMaxvAdj:10
 OpkrBatteryChargingControl:1

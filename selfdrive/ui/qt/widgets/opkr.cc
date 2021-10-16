@@ -3337,8 +3337,8 @@ SteerDeltaUpBase::SteerDeltaUpBase() : AbstractControl("SteerDeltaUp기본값", 
     auto str = QString::fromStdString(params.get("SteerDeltaUpBaseAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 4 ) {
-      value = 4;
+    if (value >= 3 ) {
+      value = 3;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaUpBaseAdj", values.toStdString());
@@ -3384,8 +3384,8 @@ SteerDeltaUpMax::SteerDeltaUpMax() : AbstractControl("SteerDeltaUp최대값", "S
     auto str = QString::fromStdString(params.get("SteerDeltaUpAdj"));
     int value = str.toInt();
     value = value - 1;
-    if (value <= 4 ) {
-      value = 4;
+    if (value <= 3 ) {
+      value = 3;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaUpAdj", values.toStdString());
@@ -3396,8 +3396,8 @@ SteerDeltaUpMax::SteerDeltaUpMax() : AbstractControl("SteerDeltaUp최대값", "S
     auto str = QString::fromStdString(params.get("SteerDeltaUpAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 7 ) {
-      value = 7;
+    if (value >= 5 ) {
+      value = 5;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaUpAdj", values.toStdString());
@@ -3514,8 +3514,8 @@ SteerDeltaDownMax::SteerDeltaDownMax() : AbstractControl("SteerDeltaDown최대�
     auto str = QString::fromStdString(params.get("SteerDeltaDownAdj"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 10 ) {
-      value = 10;
+    if (value >= 7 ) {
+      value = 7;
     }
     QString values = QString::number(value);
     params.put("SteerDeltaDownAdj", values.toStdString());
