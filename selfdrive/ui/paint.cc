@@ -134,11 +134,12 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader 
   int x_l = x - sz_w;
   int y_l = y;
 
-  auto radar_state = (*s->sm)["radarState"].getRadarState();
-  auto lead_one_radar = radar_state.getLeadOne();
-  auto lead_two_radar = radar_state.getLeadTwo();
-  if ((lead_one_radar.getStatus() || lead_one_radar.getStatus()) && 
-      (lead_one_radar.getRadar() || lead_two_radar.getRadar())) {            //radar로 인식되면
+  // auto radar_state = (*s->sm)["radarState"].getRadarState();
+  // auto lead_one_radar = radar_state.getLeadOne();
+  // auto lead_two_radar = radar_state.getLeadTwo();
+  // if ((lead_one_radar.getStatus() || lead_one_radar.getStatus()) && 
+  //     (lead_one_radar.getRadar() || lead_two_radar.getRadar())) {            //radar로 인식되면
+  if (s->scene.radarDistance < 149) {
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_radar", 0.8f);  
   } else {                                                                   //camera로 인식되면 ???
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_camera", 0.8f);  
