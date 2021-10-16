@@ -99,7 +99,7 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader 
   auto [x, y] = vd;
 
   float d_rel = lead_data.getX()[0];
-  float v_rel = lead_data.getV()[0];
+  // float v_rel = lead_data.getV()[0];
   // float speedBuff = 10.;
   // float leadBuff = 40.;  
   // # chevron
@@ -137,9 +137,10 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader 
   auto radar_state = (*s->sm)["radarState"].getRadarState();
   auto lead_one_radar = radar_state.getLeadOne();
   auto lead_two_radar = radar_state.getLeadTwo();
-  if ((lead_one_radar.getStatus() || lead_one_radar.getStatus()) && (lead_one_radar.getRadar() || lead_two_radar.getRadar())) { //radar로 인식되면
+  if ((lead_one_radar.getStatus() || lead_one_radar.getStatus()) && 
+      (lead_one_radar.getRadar() || lead_two_radar.getRadar())) {            //radar로 인식되면
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_radar", 0.8f);  
-  } else {                                               //camera로 인식되면 ???
+  } else {                                                                   //camera로 인식되면 ???
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_camera", 0.8f);  
   }
 }
