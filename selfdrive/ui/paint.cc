@@ -98,18 +98,31 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader 
   // Draw lead car indicator
   auto [x, y] = vd;
 
-  float fillAlpha = 0;
-  float speedBuff = 10.;
-  float leadBuff = 40.;
   float d_rel = lead_data.getX()[0];
   float v_rel = lead_data.getV()[0];
-  if (d_rel < leadBuff) {
-    fillAlpha = 255*(1.0-(d_rel/leadBuff));
-    if (v_rel < 0) {
-      fillAlpha += 255*(-1*(v_rel/speedBuff));
-    }
-    fillAlpha = (int)(fmin(fillAlpha, 255));
-  }
+  // float speedBuff = 10.;
+  // float leadBuff = 40.;  
+  // # chevron
+  // float fillAlpha = 0;
+  // if (d_rel < leadBuff) {
+  //   fillAlpha = 255*(1.0-(d_rel/leadBuff));
+  //   if (v_rel < 0) {
+  //     fillAlpha += 255*(-1*(v_rel/speedBuff));
+  //   }
+  //   fillAlpha = (int)(fmin(fillAlpha, 255));
+  // }
+  // float sz = std::clamp((25 * 30) / (d_rel / 3 + 30), 15.0f, 30.0f) * 2.35;
+  // x = std::clamp(x, 0.f, s->fb_w - sz / 2);
+  // y = std::fmin(s->fb_h - sz * .6, y);
+  // nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+
+  // if (s->scene.radarDistance < 149) {
+  //   draw_chevron(s, x, y, sz, nvgRGBA(201, 34, 49, fillAlpha), COLOR_YELLOW);
+  //   ui_draw_text(s, x, y + sz/1.5f, "R", 20 * 2.5, COLOR_WHITE, "sans-bold"); //neokii
+  // } else {
+  //   draw_chevron(s, x, y, sz, nvgRGBA(165, 255, 135, fillAlpha), COLOR_GREEN);
+  //   ui_draw_text(s, x, y + sz/1.5f, "C", 20 * 2.5, COLOR_BLACK, "sans-bold"); //hoya
+  // }
 
   float sz = std::clamp((30 * 30) / (d_rel / 2 + 15), 12.0f, 60.0f) * 2.35;
   x = std::clamp(x, 0.f, s->fb_w - sz / 2);
@@ -121,9 +134,11 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader 
   int x_l = x - sz_w;
   int y_l = y;
 
-  if (s->scene.radarDistance < 149) {                                         //radar가 인식되면
+  auto radar_state = (*s->sm)["radarState"].getRadarState();
+  auto lead_radar = radar_state.getLeadOne() || radar_state.getLeadTwo();
+  if (lead_radar.getStatus() && lead_radar.getRadar()) { //radar로 인식되면
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_radar", 0.8f);  
-  } else {                                                                    //camera가 인식되면
+  } else {                                               //camera로 인식되면 ???
     ui_draw_image(s, {x_l, y_l, sz_w * 2, sz_h}, "lead_under_camera", 0.8f);  
   }
 }
