@@ -344,8 +344,8 @@ static void ui_draw_debug(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_MIDDLE | NVG_ALIGN_MIDDLE);
 
   if (scene.nDebugUi1) {
-    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+480, scene.alertTextMsg1.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
-    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+520, scene.alertTextMsg2.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+720, scene.alertTextMsg1.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
+    ui_draw_text(s, ui_viz_rx+200, ui_viz_ry+760, scene.alertTextMsg2.c_str(), 40, COLOR_WHITE_ALPHA(130), "sans-semibold");
   }
 
   
@@ -379,12 +379,12 @@ static void ui_draw_debug(UIState *s) {
       ui_print(s, ui_viz_rx, ui_viz_ry+560, "SL:%.0f", (*s->sm)["carState"].getCarState().getSafetySign());
       ui_print(s, ui_viz_rx, ui_viz_ry+600, "DS:%.0f", (*s->sm)["carState"].getCarState().getSafetyDist());
     }
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+240, "SL:%.0f", scene.liveMapData.ospeedLimit);
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+280, "SLA:%.0f", scene.liveMapData.ospeedLimitAhead);
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+320, "SLAD:%.0f", scene.liveMapData.ospeedLimitAheadDistance);
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+360, "TSL:%.0f", scene.liveMapData.oturnSpeedLimit);
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+400, "TSLED:%.0f", scene.liveMapData.oturnSpeedLimitEndDistance);
-    ui_print(s, ui_viz_rx+200, ui_viz_ry+440, "TSLS:%d", scene.liveMapData.oturnSpeedLimitSign);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+320, "SL:%.0f", scene.liveMapData.ospeedLimit);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+360, "SLA:%.0f", scene.liveMapData.ospeedLimitAhead);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+400, "SLAD:%.0f", scene.liveMapData.ospeedLimitAheadDistance);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+440, "TSL:%.0f", scene.liveMapData.oturnSpeedLimit);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+480, "TSLED:%.0f", scene.liveMapData.oturnSpeedLimitEndDistance);
+    ui_print(s, ui_viz_rx+200, ui_viz_ry+520, "TSLS:%d", scene.liveMapData.oturnSpeedLimitSign);
     nvgFontSize(s->vg, 37);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     if (scene.lateralControlMethod == 0) {
