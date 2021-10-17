@@ -243,9 +243,9 @@ class NaviControl():
     else:
       v_curv_speed = navi_speed
 
-    if CS.cruise_set_mode in [1,3,4]:
+    if CS.cruise_set_mode in [1,3,4] and modelSpeed < 90 :
       if self.sm['liveMapData'].turnSpeedLimitEndDistance > 30:
-        o_curv_speed = interp(self.sm['liveMapData'].turnSpeedLimit, [30, 35, 40, 50, 60, 70, 80, 90], [35, 40, 45, 60, 65, 75, 85, 95]) # curve speedLimit ratio
+        o_curv_speed = interp(self.sm['liveMapData'].turnSpeedLimit, [30, 35, 40, 50, 60, 70, 80, 90], [40, 45, 50, 60, 65, 75, 85, 95]) # curve speedLimit ratio
       else:
         o_curv_speed = 255
     else:
