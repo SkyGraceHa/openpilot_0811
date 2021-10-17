@@ -137,10 +137,10 @@ class NaviControl():
     #if not mapValid or trafficType == 0:
     #  return  cruise_set_speed_kph
 
-    if CS.map_enabled and self.liveNaviData.safetySign == 124: #과속방지턱이 있으면 제한속도 40으로 설정하기
-      cruise_set_speed_kph = 40
-
-    if CS.map_enabled and self.liveNaviData.speedLimit > 29:
+    if CS.map_enabled and self.liveNaviData.safetySign == 124: #과속방지턱이 있으면 제한속도 35으로 설정하기
+      cruise_set_speed_kph = 35
+      self.onSpeedControl = True
+    elif CS.map_enabled and self.liveNaviData.speedLimit > 29:
       self.map_speed_dist = max(0, self.liveNaviData.speedLimitDistance - 30)
       self.map_speed = self.liveNaviData.speedLimit
       if self.map_speed_dist > 1250:
