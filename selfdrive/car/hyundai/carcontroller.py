@@ -300,7 +300,7 @@ class CarController():
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 0, self.ldws_fix))
 
-    if CS.CP.mdpsBus: # send lkas11 bus 1 if mdps is bus 1
+    if True or CS.CP.mdpsBus: # send lkas11 bus 1 if mdps is bus 1
       can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 1, self.ldws_fix))
