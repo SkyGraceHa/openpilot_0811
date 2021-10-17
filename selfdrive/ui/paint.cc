@@ -539,7 +539,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(100), 10, 20.);
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-  ui_draw_text(s, rect.centerX()+viz_max_o/2, bdr_s+65, "Max", 30 * 2.2, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-regular");
+  ui_draw_text(s, rect.centerX()+viz_max_o/2, bdr_s+65, "Max", 30 * 2.2, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
   if (is_cruise_set) {
     const std::string maxspeed_str = std::to_string((int)std::nearbyint(maxspeed));
     ui_draw_text(s, rect.centerX()+viz_max_o/2, bdr_s+165, maxspeed_str.c_str(), 48 * 2.3, COLOR_WHITE, "sans-bold");
@@ -571,11 +571,11 @@ static void ui_draw_vision_cruise_speed(UIState *s) {
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   if (s->scene.limitSpeedCamera > 29) {
-    ui_draw_text(s, rect.centerX(), bdr_s+65, "Limit", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-regular");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, "Limit", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-bold");
   } else if (s->scene.cruiseAccStatus) {
-    ui_draw_text(s, rect.centerX(), bdr_s+65, "Cruise", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-regular");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, "Cruise", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-bold");
   } else {
-    ui_draw_text(s, rect.centerX(), bdr_s+65, "Manual", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-regular");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, "Manual", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-bold");
   }
   const std::string cruise_speed_str = std::to_string((int)std::nearbyint(cruise_speed));
   if (cruise_speed >= 30 && s->scene.controls_state.getEnabled()) {
