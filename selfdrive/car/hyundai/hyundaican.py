@@ -48,8 +48,16 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
     # Note: the warning is hidden while the blinkers are on
     values["CF_Lkas_SysWarning"] = 4 if sys_warning else 0
 
-  elif car_fingerprint in [CAR.GENESIS, CAR.SONATA_LF_TURBO]:
+  elif car_fingerprint == CAR.GENESIS:
+    # This field is actually LdwsActivemode
+    # Genesis and Optima fault when forwarding while engaged
     values["CF_Lkas_LdwsActivemode"] = 2
+    values["CF_Lkas_SysWarning"] = lkas11["CF_Lkas_SysWarning"]
+
+  elif car_fingerprint in [CAR.K5_HEV, CAR.SONATA_LF_TURBO]:
+    values["CF_Lkas_LdwsOpt_USM"] = 2
+    values["CF_Lkas_FcwOpt_USM"] = 2 if enabled else 1
+    values["CF_Lkas_SysWarning"] = 4 if sys_warning else 0
 
   if ldws:
   	values["CF_Lkas_LdwsOpt_USM"] = 3
