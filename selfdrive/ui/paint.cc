@@ -420,7 +420,7 @@ static void ui_draw_gear( UIState *s ) {
   const int x = 15*2 + 180;
   const int y = 700;
   const int center_x = x + 90;
-  const int center_y = y + 150;
+  const int center_y = y + 100;
   int ngetGearShifter = int(scene.getGearShifter);
   char str_msg[512];
   char strGear[512]; 
