@@ -417,10 +417,10 @@ static void ui_draw_gear( UIState *s ) {
 
   const int w = 180;
   const int h = 180;
-  const int x = 15+180;
+  const int x = 15*2 + 180;
   const int y = 700;
   const int center_x = x + 90;
-  const int center_y = y + 30;
+  const int center_y = y - 20;
   int ngetGearShifter = int(scene.getGearShifter);
   char str_msg[512];
   char strGear[512]; 
@@ -429,7 +429,7 @@ static void ui_draw_gear( UIState *s ) {
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 130 );
  
-  ui_draw_image(s, {x, y, w, h}, "gear_step", 0.8f);
+  ui_draw_image(s, {x, y, w, h}, "gear_step", 1.0f);
 
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
