@@ -423,11 +423,11 @@ static void ui_draw_gear( UIState *s ) {
 
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
-    nvgFillColor(s->vg, COLOR_WHITE);
+    nvgFillColor(s->vg, COLOR_GREEN);
     ui_print( s, x_pos, y_pos, strGear );
   } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
-    nvgFillColor(s->vg, COLOR_WHITE);
+    nvgFillColor(s->vg, COLOR_GREEN);
     ui_print( s, x_pos, y_pos, strGear );
   } else {
     switch( ngetGearShifter )
