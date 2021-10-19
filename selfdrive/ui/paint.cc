@@ -420,14 +420,14 @@ static void ui_draw_gear( UIState *s ) {
   const int x = 15*2 + 180;
   const int y = 700;
   const int center_x = x + 90;
-  const int center_y = y - 20;
+  const int center_y = y + 150;
   int ngetGearShifter = int(scene.getGearShifter);
   char str_msg[512];
   char strGear[512]; 
 
   NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 130 );
+  nvgFontSize(s->vg, 120 );
  
   ui_draw_image(s, {x, y, w, h}, "gear_step", 1.0f);
 
