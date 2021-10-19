@@ -427,7 +427,7 @@ static void ui_draw_gear( UIState *s ) {
 
   NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 120 );
+  nvgFontSize(s->vg, 115 );
  
   ui_draw_image(s, {x, y, w, h}, "gear_step", 1.0f);
 
