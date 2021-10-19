@@ -414,9 +414,9 @@ static void ui_draw_debug(UIState *s) {
 
 static void ui_draw_gear( UIState *s ) {
   const UIScene &scene = s->scene;  
-  const int radius = 85;
+  const int radius = 90;
   const int center_x = radius + bdr_s + radius*2 + 30;
-  const int center_y = 1080 - radius*3 - 50;
+  const int center_y = 1080 - radius*3 - 55;
   int ngetGearShifter = int(scene.getGearShifter);
   char str_msg[512];
   char strGear[512];  
@@ -430,11 +430,11 @@ static void ui_draw_gear( UIState *s ) {
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y, strGear );
+    ui_print( s, center_x, center_y+20, strGear );
   } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y, strGear );
+    ui_print( s, center_x, center_y+20, strGear );
   } else {
     switch( ngetGearShifter ) {
       case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
