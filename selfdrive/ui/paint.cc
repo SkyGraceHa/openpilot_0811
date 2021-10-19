@@ -412,7 +412,7 @@ static void ui_draw_gear( UIState *s ) {
   const UIScene &scene = s->scene;  
   const int radius = 85;
   const int center_x = radius + bdr_s + radius*2 + 30;
-  const int center_y = 1080 - radius*3 - 30*2;
+  const int center_y = 1080 - radius*3 - 50;
   int ngetGearShifter = int(scene.getGearShifter);
   char str_msg[512];
   char strGear[512];  
@@ -421,8 +421,8 @@ static void ui_draw_gear( UIState *s ) {
 
   NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 160 );
-
+  nvgFontSize(s->vg, 100 );
+ 
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
     nvgFillColor(s->vg, COLOR_GREEN);
@@ -680,14 +680,14 @@ static void ui_draw_vision_event(UIState *s) {
   const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
   const QColor &color = bg_colors[s->status];
   NVGcolor nvg_color = nvgRGBA(color.red(), color.green(), color.blue(), color.alpha());
-  if (s->scene.controls_state.getEnabled() || s->scene.forceGearD || s->scene.comma_stock_ui) {
-    float angleSteers = s->scene.car_state.getSteeringAngleDeg();
-    if (s->scene.controlAllowed) {
-      ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvg_color, 1.0f, angleSteers);
-    } else {
-      ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvgRGBA(0x17, 0x33, 0x49, 0xc8), 1.0f, angleSteers);
-    }
-  } 
+
+  float angleSteers = s->scene.car_state.getSteeringAngleDeg();
+  if (s->scene.controlAllowed) {
+    ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvg_color, 1.0f, angleSteers);
+  } else {
+    ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvgRGBA(0x17, 0x33, 0x49, 0xc8), 1.0f, angleSteers);
+  }
+
   if (!s->scene.comma_stock_ui) ui_draw_debug(s);
 }
 
