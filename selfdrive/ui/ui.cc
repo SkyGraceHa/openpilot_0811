@@ -146,6 +146,8 @@ static void update_state(UIState *s) {
     }
     scene.brakePress = cs_data.getBrakePressed();
     scene.brakeLights = cs_data.getBrakeLights();
+    scene.currentGear = cs_data.getCurrentGear();
+    scene.electGearStep = cs_data.getElectGearStep();
     scene.getGearShifter = cs_data.getGearShifter();
     scene.leftBlinker = cs_data.getLeftBlinker();
     scene.rightBlinker = cs_data.getRightBlinker();

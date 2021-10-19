@@ -416,21 +416,32 @@ static void ui_draw_gear( UIState *s ) {
   //int  x_pos = 1795;
   //int  y_pos = 155;
   char str_msg[512];
+  char strGear[512];  
 
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 160 );
-  switch( ngetGearShifter )
-  {
-    case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
-    case 2 : strcpy( str_msg, "D" ); nColor = COLOR_GREEN; break;
-    case 3 : strcpy( str_msg, "N" ); nColor = COLOR_WHITE; break;
-    case 4 : strcpy( str_msg, "R" ); nColor = COLOR_RED; break;
-    case 7 : strcpy( str_msg, "B" ); break;
-    default: sprintf( str_msg, "%d", ngetGearShifter ); break;
-  }
 
-  nvgFillColor(s->vg, nColor);
-  ui_print( s, x_pos, y_pos, str_msg );
+  if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
+    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
+    nvgFillColor(s->vg, COLOR_WHITE);
+    ui_print( s, x_pos, y_pos, strGear );
+  } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
+    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
+    nvgFillColor(s->vg, COLOR_WHITE);
+    ui_print( s, x_pos, y_pos, strGear );
+  } else {
+    switch( ngetGearShifter )
+    {
+      case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
+      case 2 : strcpy( str_msg, "D" ); nColor = COLOR_GREEN; break;
+      case 3 : strcpy( str_msg, "N" ); nColor = COLOR_WHITE; break;
+      case 4 : strcpy( str_msg, "R" ); nColor = COLOR_RED; break;
+      case 7 : strcpy( str_msg, "B" ); break;
+      default: sprintf( str_msg, "%d", ngetGearShifter ); break;
+    }
+    nvgFillColor(s->vg, nColor);
+    ui_print( s, x_pos, y_pos, str_msg );
+  }
 }
 
 static void ui_draw_vision_face(UIState *s) {
