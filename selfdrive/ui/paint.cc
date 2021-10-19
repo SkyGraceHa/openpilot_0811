@@ -431,11 +431,11 @@ static void ui_draw_gear( UIState *s ) {
  
   ui_draw_image(s, {x, y, w, h}, "gear_step", 1.0f);
 
-  if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
+  if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
     nvgFillColor(s->vg, COLOR_GREEN);
     ui_print( s, center_x, center_y, strGear );
-  } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
+  } else if (s->scene.controls_state.getEnabled() && (s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);    
     nvgFillColor(s->vg, COLOR_GREEN);
     ui_print( s, center_x, center_y, strGear );
