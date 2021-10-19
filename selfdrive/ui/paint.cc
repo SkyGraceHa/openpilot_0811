@@ -417,7 +417,7 @@ static void ui_draw_gear( UIState *s ) {
   char str_msg[512];
   char strGear[512];  
 
-  ui_draw_circle_image_rotation(s, center_x, center_y, radius, "gear_step", 0.3f, 1.0f);
+  ui_draw_circle_image_rotation(s, center_x, center_y, radius, "gear_step", COLOR_BLACK_ALPHA(80), 1.0f);
 
   NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
