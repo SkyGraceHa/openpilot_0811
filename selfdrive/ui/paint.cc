@@ -686,9 +686,8 @@ static void ui_draw_vision_event(UIState *s) {
     } else {
       ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvgRGBA(0x17, 0x33, 0x49, 0xc8), 1.0f, angleSteers);
     }
-  } else {
-    if (!s->scene.comma_stock_ui) ui_draw_gear(s);
-  }
+  } 
+  if (!s->scene.comma_stock_ui) ui_draw_gear(s);
   if (!s->scene.comma_stock_ui) ui_draw_debug(s);
 }
 
