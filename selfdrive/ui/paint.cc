@@ -414,27 +414,31 @@ static void ui_draw_debug(UIState *s) {
 
 static void ui_draw_gear( UIState *s ) {
   const UIScene &scene = s->scene;  
-  const int radius = 90;
-  const int center_x = radius + bdr_s + radius*2 + 30;
-  const int center_y = 1080 - radius*3 - 55;
-  int ngetGearShifter = int(scene.getGearShifter);
+
+  const int w = 180;
+  const int h = 180;
+  const int x = 15+180;
+  const int y = 700;
   char str_msg[512];
   char strGear[512];  
-
-  ui_draw_circle_image_rotation(s, center_x, center_y, radius, "gear_step", COLOR_BLACK_ALPHA(80), 1.0f);
+  const int center_x = x + 90;
+  const int center_y = y + 30;
+  int ngetGearShifter = int(scene.getGearShifter);
 
   NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 100 );
+  nvgFontSize(s->vg, 130 );
  
+  ui_draw_image(s, {x, y, w, h}, "gear_step", 0.8f);}
+
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y+20, strGear );
+    ui_print( s, center_x, center_y, strGear );
   } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y+20, strGear );
+    ui_print( s, center_x, center_y, strGear );
   } else {
     switch( ngetGearShifter ) {
       case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
