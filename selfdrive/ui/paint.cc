@@ -407,31 +407,32 @@ static void ui_draw_debug(UIState *s) {
   brake @7;
   eco @8;
 */
+
 static void ui_draw_gear( UIState *s ) {
   const UIScene &scene = s->scene;  
-  NVGcolor nColor = COLOR_WHITE;
-  int x_pos = s->fb_w - (90 + bdr_s);
-  int y_pos = bdr_s + 140;
+  const int radius = 85;
+  const int center_x = radius + bdr_s + radius*2 + 30;
+  const int center_y = 1080 - radius*3 - 30*2;
   int ngetGearShifter = int(scene.getGearShifter);
-  //int  x_pos = 1795;
-  //int  y_pos = 155;
   char str_msg[512];
   char strGear[512];  
 
+  ui_draw_circle_image_rotation(s, center_x, center_y, radius, "gear_step", 0.3f, 1.0f);
+
+  NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 160 );
 
   if ((s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, x_pos, y_pos, strGear );
+    ui_print( s, center_x, center_y, strGear );
   } else if ((s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
-    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
+    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);    
     nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, x_pos, y_pos, strGear );
+    ui_print( s, center_x, center_y, strGear );
   } else {
-    switch( ngetGearShifter )
-    {
+    switch( ngetGearShifter ) {
       case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
       case 2 : strcpy( str_msg, "D" ); nColor = COLOR_GREEN; break;
       case 3 : strcpy( str_msg, "N" ); nColor = COLOR_WHITE; break;
@@ -440,7 +441,7 @@ static void ui_draw_gear( UIState *s ) {
       default: sprintf( str_msg, "%d", ngetGearShifter ); break;
     }
     nvgFillColor(s->vg, nColor);
-    ui_print( s, x_pos, y_pos, str_msg );
+    ui_print( s, center_x, center_y, str_msg );
   }
 }
 
@@ -687,7 +688,6 @@ static void ui_draw_vision_event(UIState *s) {
       ui_draw_circle_image_rotation(s, bg_wheel_x, bg_wheel_y+20, bg_wheel_size, "wheel", nvgRGBA(0x17, 0x33, 0x49, 0xc8), 1.0f, angleSteers);
     }
   } 
-  if (!s->scene.comma_stock_ui) ui_draw_gear(s);
   if (!s->scene.comma_stock_ui) ui_draw_debug(s);
 }
 
@@ -1259,8 +1259,9 @@ static void ui_draw_blindspot_mon(UIState *s) {
 
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
-  if (!s->scene.comma_stock_ui){
+  if (!s->scene.comma_stock_ui){    
     ui_draw_vision_scc_gap(s);
+    ui_draw_gear(s);    
     ui_draw_vision_brake(s);
     ui_draw_vision_autohold(s);
   }
@@ -1543,6 +1544,7 @@ void ui_nvg_init(UIState *s) {
     {"lead_radar", "../assets/addon/img/lead_radar.png"},
     {"lead_under_radar", "../assets/addon/img/lead_underline_radar.png"},
     {"lead_under_camera", "../assets/addon/img/lead_underline_camera.png"},
+    {"gear_step", "../assets/addon/img/gear.png"},
     {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
