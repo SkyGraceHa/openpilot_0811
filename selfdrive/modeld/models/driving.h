@@ -5,7 +5,6 @@
 #define DESIRE
 #define TRAFFIC_CONVENTION
 
-#include <array>
 #include <memory>
 
 #include "cereal/messaging/messaging.h"
@@ -15,59 +14,19 @@
 #include "selfdrive/modeld/models/commonmodel.h"
 #include "selfdrive/modeld/runners/run.h"
 
-constexpr int PLAN_MHP_N = 5;
-
 constexpr int DESIRE_LEN = 8;
 constexpr int TRAFFIC_CONVENTION_LEN = 2;
 constexpr int MODEL_FREQ = 20;
 
-struct ModelDataRawXYZ {
-  float x;
-  float y;
-  float z;
-};
-static_assert(sizeof(ModelDataRawXYZ) == sizeof(float)*3);
-
-struct ModelDataRawPlanTimeStep {
-  ModelDataRawXYZ position;
-  ModelDataRawXYZ velocity;
-  ModelDataRawXYZ acceleration;
-  ModelDataRawXYZ rotation;
-  ModelDataRawXYZ rotation_rate;
-};
-static_assert(sizeof(ModelDataRawPlanTimeStep) == sizeof(ModelDataRawXYZ)*5);
-
-struct ModelDataRawPlanPath {
-  std::array<ModelDataRawPlanTimeStep, TRAJECTORY_SIZE> mean;
-  std::array<ModelDataRawPlanTimeStep, TRAJECTORY_SIZE> std;
-  float prob;
-};
-static_assert(sizeof(ModelDataRawPlanPath) == (sizeof(ModelDataRawPlanTimeStep)*TRAJECTORY_SIZE*2) + sizeof(float));
-
-struct ModelDataRawPlan {
-  std::array<ModelDataRawPlanPath, PLAN_MHP_N> path;
-
-  constexpr const ModelDataRawPlanPath &best_plan() const {
-    int max_idx = 0;
-    for (int i = 1; i < path.size(); i++) {
-      if (path[i].prob > path[max_idx].prob) {
-        max_idx = i;
-      }
-    }
-    return path[max_idx];
-  }
-};
-static_assert(sizeof(ModelDataRawPlan) == sizeof(ModelDataRawPlanPath)*PLAN_MHP_N);
-
 struct ModelDataRawPose {
-  ModelDataRawXYZ velocity_mean;
-  ModelDataRawXYZ rotation_mean;
-  ModelDataRawXYZ velocity_std;
-  ModelDataRawXYZ rotation_std;
+  float trans_arr[3];
+  float rot_arr[3];
+  float trans_std_arr[3];
+  float rot_std_arr[3];
 };
 
 struct ModelDataRaw {
-  ModelDataRawPlan *plan;
+  float *plan;
   float *lane_lines;
   float *lane_lines_prob;
   float *road_edges;
