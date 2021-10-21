@@ -342,7 +342,7 @@ class CarState(CarStateBase):
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(gear))
 
     if not self.CP.carFingerprint in FEATURES["use_elect_gears"]:
-      ret.currentGear = cp.vl["LVR11"]["CF_Lvr_GearInf"]      
+      ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"] # cp.vl["LVR11"]["CF_Lvr_GearInf"]      
 
     if self.CP.fcaBus != -1 or self.CP.carFingerprint in FEATURES["use_fca"]:
       ret.stockAeb = cp_fca.vl["FCA11"]["FCA_CmdAct"] != 0
@@ -437,6 +437,7 @@ class CarState(CarStateBase):
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
 
+      ("CF_Lvr_CGear", "LVR11", 0), 
       ("CF_Lvr_GearInf", "LVR11", 0),  #Transmission Gear (0=N or P, 1~8=D, 14=R)
 
       ("CF_Lvr_CruiseSet", "LVR12", 0),
