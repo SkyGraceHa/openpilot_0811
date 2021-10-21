@@ -437,6 +437,8 @@ class CarState(CarStateBase):
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
 
+      ("CF_Lvr_GearInf", "LVR11", 0),  #Transmission Gear (0=N or P, 1~8=D, 14=R)
+
       ("CF_Lvr_CruiseSet", "LVR12", 0),
       ("CRUISE_LAMP_M", "EMS16", 0),
 
