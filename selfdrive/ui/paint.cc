@@ -419,37 +419,36 @@ static void ui_draw_gear( UIState *s ) {
   const int h = 180;
   const int x = 15*2 + 180;
   const int y = 700;
-  const int center_x = x + 90;
-  const int center_y = y + 90;
+  const int gear_num_x = x + 90 + 50;
+  const int gear_num_y = y + 90 + 40;
   int ngetGearShifter = int(scene.getGearShifter);
-  char str_msg[512];
+  // char str_msg[512];
   char strGear[512]; 
 
-  NVGcolor nColor = COLOR_WHITE;
+  // NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 115 );
- 
-  ui_draw_image(s, {x, y, w, h}, "gear_step", 1.0f);
+  nvgFontSize(s->vg, 60);
+  nvgFillColor(s->vg, COLOR_GREEN);
 
   if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
+    ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.currentGear);    
-    nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y, strGear );
+    ui_print( s, gear_num_x, gear_num_y, strGear );
   } else if (s->scene.controls_state.getEnabled() && (s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
-    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);    
-    nvgFillColor(s->vg, COLOR_GREEN);
-    ui_print( s, center_x, center_y, strGear );
+    ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
+    snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);  
+    ui_print( s, gear_num_x, gear_num_y, strGear );
   } else {
     switch( ngetGearShifter ) {
-      case 1 : strcpy( str_msg, "P" ); nColor = nvgRGBA(200, 200, 255, 255); break;
-      case 2 : strcpy( str_msg, "D" ); nColor = COLOR_GREEN; break;
-      case 3 : strcpy( str_msg, "N" ); nColor = COLOR_WHITE; break;
-      case 4 : strcpy( str_msg, "R" ); nColor = COLOR_RED; break;
-      case 7 : strcpy( str_msg, "B" ); break;
-      default: sprintf( str_msg, "%d", ngetGearShifter ); break;
+      case 1 : ui_draw_image(s, {x, y, w, h}, "gear_P", 1.0f); break;
+      case 2 : ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f); break;
+      case 3 : ui_draw_image(s, {x, y, w, h}, "gear_N", 1.0f); break;
+      case 4 : ui_draw_image(s, {x, y, w, h}, "gear_R", 1.0f); break;
+      case 7 : ui_draw_image(s, {x, y, w, h}, "gear_R", 1.0f); break;
+      default: ui_draw_image(s, {x, y, w, h}, "gear_X", 1.0f); break;
     }
-    nvgFillColor(s->vg, nColor);
-    ui_print( s, center_x, center_y, str_msg );
+    // nvgFillColor(s->vg, nColor);
+    // ui_print( s, center_x, center_y, str_msg );
   }
 }
 
@@ -1553,6 +1552,11 @@ void ui_nvg_init(UIState *s) {
     {"lead_under_radar", "../assets/addon/img/lead_underline_radar.png"},
     {"lead_under_camera", "../assets/addon/img/lead_underline_camera.png"},
     {"gear_step", "../assets/addon/img/gear.png"},
+    {"gear_P", "../assets/addon/img/gearP.png"},
+    {"gear_R", "../assets/addon/img/gearR.png"},
+    {"gear_N", "../assets/addon/img/gearN.png"},
+    {"gear_D", "../assets/addon/img/gearD.png"},
+
     {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
