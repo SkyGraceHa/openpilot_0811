@@ -1551,7 +1551,6 @@ void ui_nvg_init(UIState *s) {
     {"lead_radar", "../assets/addon/img/lead_radar.png"},
     {"lead_under_radar", "../assets/addon/img/lead_underline_radar.png"},
     {"lead_under_camera", "../assets/addon/img/lead_underline_camera.png"},
-    {"gear_step", "../assets/addon/img/gear.png"},
     {"gear_P", "../assets/addon/img/gearP.png"},
     {"gear_R", "../assets/addon/img/gearR.png"},
     {"gear_N", "../assets/addon/img/gearN.png"},
