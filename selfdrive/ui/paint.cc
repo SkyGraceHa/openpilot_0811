@@ -429,6 +429,7 @@ static void ui_draw_gear( UIState *s ) {
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 60);
   nvgFillColor(s->vg, COLOR_GREEN);
+  ui_draw_image(s, {x, y, w, h}, "gear_BG", 0.5f);
 
   if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
@@ -1556,6 +1557,7 @@ void ui_nvg_init(UIState *s) {
     {"gear_N", "../assets/addon/img/gearN.png"},
     {"gear_D", "../assets/addon/img/gearD.png"},
     {"gear_X", "../assets/addon/img/gearX.png"},
+    {"gear_BG", "../assets/addon/img/gearBG.png"},    
     {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
