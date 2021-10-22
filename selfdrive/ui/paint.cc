@@ -1556,7 +1556,7 @@ void ui_nvg_init(UIState *s) {
     {"gear_R", "../assets/addon/img/gearR.png"},
     {"gear_N", "../assets/addon/img/gearN.png"},
     {"gear_D", "../assets/addon/img/gearD.png"},
-
+    {"gear_X", "../assets/addon/img/gearX.png"},
     {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
