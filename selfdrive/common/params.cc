@@ -288,6 +288,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"RecordingCount", PERSISTENT},
     {"RecordingQuality", PERSISTENT},
     {"CruiseGapAdjust", PERSISTENT},
+    {"DrivingCruiseGapAdjust", PERSISTENT},    
     {"AutoEnable", PERSISTENT},
     {"AutoEnableSpeed", PERSISTENT},
     {"CruiseAutoRes", PERSISTENT},

@@ -88,6 +88,18 @@ public:
   }
 };
 
+class DrivingCruiseGapAdjustToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  DrivingCruiseGapAdjustToggle() : ToggleControl("주행중 크루즈 갭 자동변경", "주행속도에 따라 차간간격을 자동으로 조절합니다..", "../assets/offroad/icon_shell.png", Params().getBool("DrivingCruiseGapAdjust")) {
+    QObject::connect(this, &DrivingCruiseGapAdjustToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("DrivingCruiseGapAdjust", status);
+    });
+  }
+};
+
 class AutoEnabledToggle : public ToggleControl {
   Q_OBJECT
 
