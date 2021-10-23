@@ -6,7 +6,7 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_hda_mfc, \
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
                                              create_scc42a, create_scc7d0, create_mdps12
-from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
+from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES, STEER_THRESHOLD
 from opendbc.can.packer import CANPacker
 from selfdrive.controls.lib.longcontrol import LongCtrlState
 from selfdrive.car.hyundai.carstate import GearShifter
@@ -244,9 +244,9 @@ class CarController():
 
     # disable when temp fault is active, or below LKA minimum speed
     if self.opkr_maxanglelimit >= 90 and not self.steer_wind_down_enabled:
-      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive
+      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive and abs(CS.out.steeringTorque) < 200
     else:
-      lkas_active = enabled and not CS.out.steerWarning and CS.out.gearShifter == GearShifter.drive
+      lkas_active = enabled and not CS.out.steerWarning and CS.out.gearShifter == GearShifter.drive and abs(CS.out.steeringTorque) < 200
 
 
     if (( CS.out.leftBlinker and not CS.out.rightBlinker) or ( CS.out.rightBlinker and not CS.out.leftBlinker)) and CS.out.vEgo < LANE_CHANGE_SPEED_MIN and self.opkr_turnsteeringdisable:
@@ -260,7 +260,7 @@ class CarController():
     if self.emergency_manual_timer > 0:
       self.emergency_manual_timer -= 1
 
-    if abs(CS.out.steeringTorque) > 170 and CS.out.vEgo < LANE_CHANGE_SPEED_MIN:
+    if abs(CS.out.steeringTorque) > STEER_THRESHOLD and CS.out.vEgo < LANE_CHANGE_SPEED_MIN:
       self.driver_steering_torque_above = True
     else:
       self.driver_steering_torque_above = False
