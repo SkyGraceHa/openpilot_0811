@@ -942,7 +942,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.PERMANENT: Alert(
       "후진 기어",
       "",
-      AlertStatus.normal, AlertSize.full,
+      AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, 0., 0., .2, creation_delay=0.5),
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("후진 기어"),
     ET.NO_ENTRY: NoEntryAlert("후진 기어"),
