@@ -92,7 +92,7 @@ class DrivingCruiseGapAdjustToggle : public ToggleControl {
   Q_OBJECT
 
 public:
-  DrivingCruiseGapAdjustToggle() : ToggleControl("주행중 크루즈 갭 자동변경", "주행속도에 따라 차간간격을 자동으로 조절합니다. [20km/h~(2칸), 45km/h~(3칸), 80km/h~(4칸)]. 가끔 크루즈 오류가 발생할 수 있습니다.", "../assets/offroad/icon_shell.png", Params().getBool("DrivingCruiseGapAdjust")) {
+  DrivingCruiseGapAdjustToggle() : ToggleControl("주행중 크루즈 갭 자동변경", "주행속도에 따라 차간간격을 자동으로 조절합니다. [20km/h~(2칸), 45km/h~(3칸), 85km/h~(4칸)]. 가끔 크루즈 오류가 발생할 수 있습니다.", "../assets/offroad/icon_shell.png", Params().getBool("DrivingCruiseGapAdjust")) {
     QObject::connect(this, &DrivingCruiseGapAdjustToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("DrivingCruiseGapAdjust", status);
