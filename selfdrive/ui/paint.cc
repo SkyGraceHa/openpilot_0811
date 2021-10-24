@@ -1454,10 +1454,9 @@ static void ui_draw_vision(UIState *s) {
   }
   // Set Speed, Current Speed, Status/Events
   ui_draw_vision_header(s);
-  if ((*s->sm)["controlsState"].getControlsState().getAlertSize() == cereal::ControlsState::AlertSize::NONE) {
-    ui_draw_vision_footer(s);
-    ui_draw_blindspot_mon(s);
-  }
+  ui_draw_vision_footer(s);
+  ui_draw_blindspot_mon(s);
+
   if (scene->live_tune_panel_enable) {
     ui_draw_live_tune_panel(s);
   }
