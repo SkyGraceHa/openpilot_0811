@@ -245,9 +245,9 @@ class CarController():
 
     # disable when temp fault is active, or below LKA minimum speed
     if self.opkr_maxanglelimit >= 90 and not self.steer_wind_down_enabled:
-      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive and (abs(CS.out.steeringTorque) < 200 and abs(CS.out.steeringAngleDeg) < 10)
+      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive and abs(CS.out.steeringTorque) < 250
     else:
-      lkas_active = enabled and not CS.out.steerWarning and CS.out.gearShifter == GearShifter.drive and (abs(CS.out.steeringTorque) < 200 and abs(CS.out.steeringAngleDeg) < 10)
+      lkas_active = enabled and not CS.out.steerWarning and CS.out.gearShifter == GearShifter.drive and abs(CS.out.steeringTorque) < 250
 
 
     if (( CS.out.leftBlinker and not CS.out.rightBlinker) or ( CS.out.rightBlinker and not CS.out.leftBlinker)) and CS.out.vEgo < LANE_CHANGE_SPEED_MIN and self.opkr_turnsteeringdisable:
