@@ -429,7 +429,7 @@ static void ui_draw_gear( UIState *s ) {
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 90);
   nvgFillColor(s->vg, COLOR_GREEN);
-  ui_draw_image(s, {x, y, w, h}, "gear_BG", 0.5f);
+  ui_draw_image(s, {x, y, w, h}, "gear_BG", 0.6f);
 
   if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
