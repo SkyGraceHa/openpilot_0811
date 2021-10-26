@@ -145,7 +145,8 @@ class CarInterfaceBase():
     elif cs_out.steerWarning and not self.steer_wind_down_enabled and not self.steer_warning_fix_enabled:
       # only escalate to the harsher alert after the condition has
       # persisted for 0.5s and we're certain that the user isn't overriding
-      if self.steering_unpressed > int(0.5/DT_CTRL) and self.steer_warning > int(0.5/DT_CTRL):
+      if not cs_out.standstill and self.steering_unpressed > int(0.5 / DT_CTRL) and \
+         self.steer_warning > int(0.5 / DT_CTRL):
         events.add(EventName.steerTempUnavailable)
       else:
         events.add(EventName.steerTempUnavailableSilent)
