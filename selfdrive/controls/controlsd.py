@@ -656,8 +656,8 @@ class Controls:
     CC.hudControl.leadvRel = self.sm['radarState'].leadOne.vRel
     CC.hudControl.leadyRel = self.sm['radarState'].leadOne.yRel
 
-    right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
-    left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
+    right_lane_visible = self.sm['lateralPlan'].rProb > 0.3
+    left_lane_visible = self.sm['lateralPlan'].lProb > 0.3
     CC.hudControl.rightLaneVisible = bool(right_lane_visible)
     CC.hudControl.leftLaneVisible = bool(left_lane_visible)
 
