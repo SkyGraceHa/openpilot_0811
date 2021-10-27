@@ -417,8 +417,8 @@ static void ui_draw_gear( UIState *s ) {
 
   const int w = 180;
   const int h = 180;
-  const int x = 15*2 + 180;
-  const int y = 700;
+  const int x = 15; //15*2 + 180;
+  const int y = 680;
   const int gear_num_x = x + 90 + 60;
   const int gear_num_y = y + 90 + 40;
   int ngetGearShifter = int(scene.getGearShifter);
@@ -427,7 +427,7 @@ static void ui_draw_gear( UIState *s ) {
 
   // NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 120);
+  nvgFontSize(s->vg, 100);
   nvgFillColor(s->vg, COLOR_GREEN);
   ui_draw_image(s, {x, y, w + 20, h}, "gear_BG", 0.6f);
 
@@ -467,7 +467,7 @@ static void ui_draw_vision_scc_gap(UIState *s) {
   const int w = 180;
   const int h = 180;
   const int x = 15;
-  const int y = 700;
+  const int y = 880;
 
   if(gap <= 0) {ui_draw_image(s, {x, y, w, h}, "lead_car_dist_0", 0.3f);}
   else if (gap == 1) {ui_draw_image(s, {x, y, w, h}, "lead_car_dist_1", 0.5f);}
@@ -1266,7 +1266,7 @@ static void ui_draw_blindspot_mon(UIState *s) {
 }
 
 static void ui_draw_vision_footer(UIState *s) {
-  ui_draw_vision_face(s);
+  // ui_draw_vision_face(s);
   if (!s->scene.comma_stock_ui){    
     ui_draw_vision_scc_gap(s);
     ui_draw_gear(s);    
