@@ -667,15 +667,15 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"튜닝", new TuningPanel(this)},
   };
 
-  sidebar_layout->addSpacing(43);
+  sidebar_layout->addSpacing(38);
 
 #ifdef ENABLE_MAPS
   auto map_panel = new MapPanel(this);
-  panels.push_back({"Navigation", map_panel});
+  panels.push_back({"네비게이션", map_panel});
   QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
 
-  const int padding = panels.size() > 3 ? 18 : 28;
+  const int padding = panels.size() > 3 ? 15 : 25;
 
   nav_btns = new QButtonGroup();
   for (auto &[name, panel] : panels) {
