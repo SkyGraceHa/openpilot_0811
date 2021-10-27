@@ -94,7 +94,7 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
   {
     QVBoxLayout *no_prime_layout = new QVBoxLayout(no_prime_widget);
     QLabel *signup_header = new QLabel("Try the Navigation Beta");
-    signup_header->setStyleSheet(R"(font-size: 65px; color: white; font-weight:600;)");
+    signup_header->setStyleSheet(R"(font-size: 70px; color: white; font-weight:600;)");
     signup_header->setAlignment(Qt::AlignCenter);
 
     no_prime_layout->addWidget(signup_header);
@@ -102,11 +102,11 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
 
     QLabel *screenshot = new QLabel;
     QPixmap pm = QPixmap("../assets/navigation/screenshot.png");
-    screenshot->setPixmap(pm.scaledToWidth(vwp_w * 0.35, Qt::SmoothTransformation));
+    screenshot->setPixmap(pm.scaledToWidth(vwp_w * 0.4, Qt::SmoothTransformation));
     no_prime_layout->addWidget(screenshot, 0, Qt::AlignHCenter);
 
     QLabel *signup = new QLabel("Get turn-by-turn directions displayed and more with a comma \nprime subscription. Sign up now: https://connect.comma.ai");
-    signup->setStyleSheet(R"(font-size: 35px; color: white; font-weight:300;)");
+    signup->setStyleSheet(R"(font-size: 38px; color: white; font-weight:300;)");
     signup->setAlignment(Qt::AlignCenter);
 
     no_prime_layout->addSpacing(20);
