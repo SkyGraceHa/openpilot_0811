@@ -115,7 +115,8 @@ if arch == "aarch64" or arch == "larch64":
     libpath += [
       "#phonelibs/snpe/aarch64",
       "#phonelibs/libyuv/lib",
-      "/system/vendor/lib64"
+      "/system/vendor/lib64",
+      "#phonelibs/mapbox-gl-native-qt/aarch64"
     ]
     cflags = ["-DQCOM", "-D_USING_LIBCXX", "-mcpu=cortex-a57"]
     cxxflags = ["-DQCOM", "-D_USING_LIBCXX", "-mcpu=cortex-a57"]
