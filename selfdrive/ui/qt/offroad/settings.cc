@@ -667,7 +667,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"튜닝", new TuningPanel(this)},
   };
 
-  sidebar_layout->addSpacing(43);
+  sidebar_layout->addSpacing(33);
 
 #ifdef ENABLE_MAPS
   auto map_panel = new MapPanel(this);
