@@ -1266,7 +1266,9 @@ static void ui_draw_blindspot_mon(UIState *s) {
 }
 
 static void ui_draw_vision_footer(UIState *s) {
-  // ui_draw_vision_face(s);
+  if (s->scene.comma_stock_ui){
+    ui_draw_vision_face(s);
+   }
   if (!s->scene.comma_stock_ui){    
     ui_draw_vision_scc_gap(s);
     ui_draw_gear(s);    
