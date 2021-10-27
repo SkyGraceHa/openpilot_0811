@@ -427,9 +427,9 @@ static void ui_draw_gear( UIState *s ) {
 
   // NVGcolor nColor = COLOR_WHITE;
   nvgFontFace(s->vg, "sans-bold");
-  nvgFontSize(s->vg, 90);
+  nvgFontSize(s->vg, 120);
   nvgFillColor(s->vg, COLOR_GREEN);
-  ui_draw_image(s, {x, y, w, h}, "gear_BG", 0.6f);
+  ui_draw_image(s, {x, y, w + 20, h}, "gear_BG", 0.6f);
 
   if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
@@ -438,7 +438,7 @@ static void ui_draw_gear( UIState *s ) {
   } else if (s->scene.controls_state.getEnabled() && (s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);  
-    ui_print( s, gear_num_x, gear_num_y, strGear );
+    ui_print( s, gear_num_x + 10, gear_num_y, strGear );
   } else {
     switch( ngetGearShifter ) {
       case 1 : ui_draw_image(s, {x, y, w, h}, "gear_P", 1.0f); break;
