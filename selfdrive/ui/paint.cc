@@ -420,7 +420,7 @@ static void ui_draw_gear( UIState *s ) {
   const int x = 15; //15*2 + 180;
   const int y = 680;
   const int gear_num_x = x + 90 + 60;
-  const int gear_num_y = y + 90 + 40;
+  const int gear_num_y = y + 90 + 45;
   int ngetGearShifter = int(scene.getGearShifter);
   // char str_msg[512];
   char strGear[512]; 
@@ -429,7 +429,7 @@ static void ui_draw_gear( UIState *s ) {
   nvgFontFace(s->vg, "sans-bold");
   nvgFontSize(s->vg, 100);
   nvgFillColor(s->vg, COLOR_GREEN);
-  ui_draw_image(s, {x, y, w + 20, h}, "gear_BG", 0.6f);
+  ui_draw_image(s, {x, y, w, h}, "gear_BG", 0.6f);
 
   if (s->scene.controls_state.getEnabled() && (s->scene.currentGear < 9) && (s->scene.currentGear !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
@@ -438,7 +438,7 @@ static void ui_draw_gear( UIState *s ) {
   } else if (s->scene.controls_state.getEnabled() && (s->scene.electGearStep < 9) && (s->scene.electGearStep !=0)) {
     ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f);
     snprintf(strGear, sizeof(strGear), "%.0f", s->scene.electGearStep);  
-    ui_print( s, gear_num_x + 10, gear_num_y, strGear );
+    ui_print( s, gear_num_x, gear_num_y, strGear );
   } else {
     switch( ngetGearShifter ) {
       case 1 : ui_draw_image(s, {x, y, w, h}, "gear_P", 1.0f); break;
@@ -1266,7 +1266,9 @@ static void ui_draw_blindspot_mon(UIState *s) {
 }
 
 static void ui_draw_vision_footer(UIState *s) {
-  // ui_draw_vision_face(s);
+  if (s->scene.comma_stock_ui){
+    ui_draw_vision_face(s);
+   }
   if (!s->scene.comma_stock_ui){    
     ui_draw_vision_scc_gap(s);
     ui_draw_gear(s);    
