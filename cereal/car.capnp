@@ -232,6 +232,17 @@ struct CarState {
   electGearStep @53 :Int8;
   isMph @54 :Bool;
 
+  autoHold @55 : Int32;
+  tpms @56 : Tpms;
+  currentGear @57 :Float32;  
+
+  struct Tpms {
+    fl @0 :Float32;
+    fr @1 :Float32;
+    rl @2 :Float32;
+    rr @3 :Float32;
+  } 
+  
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;

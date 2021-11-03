@@ -6,7 +6,7 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_hda_mfc, \
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
                                              create_scc42a, create_scc7d0, create_mdps12
-from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
+from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES, STEER_THRESHOLD
 from opendbc.can.packer import CANPacker
 from selfdrive.controls.lib.longcontrol import LongCtrlState
 from selfdrive.car.hyundai.carstate import GearShifter
@@ -85,6 +85,7 @@ class CarController():
     self.opkr_variablecruise = self.params.get_bool("OpkrVariableCruise")
     self.opkr_autoresume = self.params.get_bool("OpkrAutoResume")
     self.opkr_cruisegap_auto_adj = self.params.get_bool("CruiseGapAdjust")
+    self.opkr_drivingcruisegap_auto_adj = self.params.get_bool("DrivingCruiseGapAdjust")
     self.opkr_cruise_auto_res = self.params.get_bool("CruiseAutoRes")
     self.opkr_cruise_auto_res_option = int(self.params.get("AutoResOption", encoding="utf8"))
     self.opkr_cruise_auto_res_condition = int(self.params.get("AutoResCondition", encoding="utf8"))
@@ -111,6 +112,7 @@ class CarController():
 
     self.cruise_gap_prev = 0
     self.cruise_gap_set_init = 0
+    self.cruise_gap_auto_switch_timer = 0
     self.cruise_gap_adjusting = False
     self.standstill_fault_reduce_timer = 0
 
@@ -216,7 +218,7 @@ class CarController():
     if self.emergency_manual_timer > 0:
       self.emergency_manual_timer -= 1
 
-    if abs(CS.out.steeringTorque) > 170 and CS.out.vEgo < LANE_CHANGE_SPEED_MIN:
+    if abs(CS.out.steeringTorque) > STEER_THRESHOLD and CS.out.vEgo < LANE_CHANGE_SPEED_MIN:
       self.driver_steering_torque_above = True
     else:
       self.driver_steering_torque_above = False
@@ -293,6 +295,36 @@ class CarController():
     if pcm_cancel_cmd and self.longcontrol:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL, clu11_speed, CS.CP.sccBus))
 
+    # 차간거리를 주행속도에 맞춰 변환하기
+    if self.opkr_drivingcruisegap_auto_adj :
+      if CS.acc_active and not CS.out.gasPressed and not CS.out.brakePressed:
+        if (CS.out.vEgo * CV.MS_TO_KPH) >= 85: # 시속 85킬로 이상 GAP_DIST 4칸 유지
+          self.cruise_gap_auto_switch_timer += 1
+          if self.cruise_gap_auto_switch_timer > 20 and (CS.cruiseGapSet != 4.0) :
+            can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST)) if not self.longcontrol \
+              else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST, clu11_speed, CS.CP.sccBus))
+            self.cruise_gap_auto_switch_timer = 0
+          if CS.cruiseGapSet == 4.0:
+            self.cruise_gap_auto_switch_timer = 0
+        elif (CS.out.vEgo * CV.MS_TO_KPH) >= 45 :# 시속 40킬로 이상 GAP_DIST 3칸 유지
+          self.cruise_gap_auto_switch_timer += 1
+          if self.cruise_gap_auto_switch_timer > 20 and (CS.cruiseGapSet != 3.0) :
+            can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST)) if not self.longcontrol \
+              else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST, clu11_speed, CS.CP.sccBus))
+            self.cruise_gap_auto_switch_timer = 0
+          if CS.cruiseGapSet == 3.0:
+            self.cruise_gap_auto_switch_timer = 0  
+        elif (CS.out.vEgo * CV.MS_TO_KPH) >= 20 :# 시속 20킬로 이상 GAP_DIST 2칸 유지지
+          self.cruise_gap_auto_switch_timer += 1
+          if self.cruise_gap_auto_switch_timer > 20 and (CS.cruiseGapSet != 2.0) :
+            can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST)) if not self.longcontrol \
+              else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST, clu11_speed, CS.CP.sccBus))
+            self.cruise_gap_auto_switch_timer = 0
+          if CS.cruiseGapSet == 2.0:
+            self.cruise_gap_auto_switch_timer = 0          
+        else:
+          self.cruise_gap_auto_switch_timer += 1 
+          # pass
     if CS.out.cruiseState.standstill:
       self.standstill_status = 1
       if self.opkr_autoresume:

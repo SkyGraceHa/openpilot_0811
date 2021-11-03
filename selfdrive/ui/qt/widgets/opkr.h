@@ -76,6 +76,18 @@ public:
   }
 };
 
+class DrivingCruiseGapAdjustToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  DrivingCruiseGapAdjustToggle() : ToggleControl("Change Cruise Gap when SCC", "Automatically adjust the distance between cars while driving. [20km/h~(Gap2), 45km/h~(Gap3), 85km/h~(Gap4)]. Don't choose long control. Sometimes, cruise error can occur.", "../assets/offroad/icon_shell.png", Params().getBool("DrivingCruiseGapAdjust")) {
+    QObject::connect(this, &DrivingCruiseGapAdjustToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("DrivingCruiseGapAdjust", status);
+    });
+  }
+};
+
 class AutoEnabledToggle : public ToggleControl {
   Q_OBJECT
 

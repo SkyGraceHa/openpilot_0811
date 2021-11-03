@@ -87,7 +87,7 @@ static void update_model(UIState *s, const cereal::ModelDataV2::Reader &model) {
   const auto road_edge_stds = model.getRoadEdgeStds();
   for (int i = 0; i < std::size(scene.road_edge_vertices); i++) {
     scene.road_edge_stds[i] = road_edge_stds[i];
-    update_line_data(s, road_edges[i], 0.025, 0, &scene.road_edge_vertices[i], max_idx);
+    update_line_data(s, road_edges[i], 0.2, 0, &scene.road_edge_vertices[i], max_idx);
   }
 
   // update path
@@ -97,7 +97,7 @@ static void update_model(UIState *s, const cereal::ModelDataV2::Reader &model) {
     max_distance = std::clamp((float)(lead_d - fmin(lead_d * 0.35, 10.)), 0.0f, max_distance);
   }
   max_idx = get_path_length_idx(model_position, max_distance);
-  update_line_data(s, model_position, 0.5, 1.22, &scene.track_vertices, max_idx);
+  update_line_data(s, model_position, 1.0, 1.22, &scene.track_vertices, max_idx);
 }
 
 static void update_sockets(UIState *s) {
@@ -147,6 +147,8 @@ static void update_state(UIState *s) {
     }
     scene.brakePress = cs_data.getBrakePressed();
     scene.brakeLights = cs_data.getBrakeLights();
+    scene.currentGear = cs_data.getCurrentGear();
+    scene.electGearStep = cs_data.getElectGearStep();
     scene.getGearShifter = cs_data.getGearShifter();
     scene.leftBlinker = cs_data.getLeftBlinker();
     scene.rightBlinker = cs_data.getRightBlinker();
@@ -408,6 +410,10 @@ static void update_status(UIState *s) {
       s->status = STATUS_WARNING;
     } else if (alert_status == cereal::ControlsState::AlertStatus::CRITICAL) {
       s->status = STATUS_ALERT;
+    } else if (s->scene.brakePress) {
+      s->status = STATUS_BRAKE;
+    } else if (s->scene.cruiseAccStatus) {
+      s->status = STATUS_CRUISE; 
     } else {
       s->status = controls_state.getEnabled() ? STATUS_ENGAGED : STATUS_DISENGAGED;
     }
@@ -430,7 +436,7 @@ static void update_status(UIState *s) {
 
 QUIState::QUIState(QObject *parent) : QObject(parent) {
   ui_state.sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
-    "modelV2", "controlsState", "liveCalibration", "deviceState", "roadCameraState",
+    "modelV2", "controlsState", "liveCalibration", "deviceState", "roadCameraState", "radarState", 
     "pandaState", "carParams", "driverMonitoringState", "sensorEvents", "carState", "liveLocationKalman",
     "ubloxGnss", "gpsLocationExternal", "liveParameters", "lateralPlan", "liveNaviData", "liveMapData",
   });

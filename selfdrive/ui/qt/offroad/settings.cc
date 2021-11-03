@@ -493,6 +493,7 @@ UserPanel::UserPanel(QWidget *parent) : QFrame(parent) {
   layout->addWidget(new SpeedLimitOffset());
   layout->addWidget(new CamDecelDistAdd());
   layout->addWidget(new CruiseGapAdjustToggle());
+  layout->addWidget(new DrivingCruiseGapAdjustToggle());
   layout->addWidget(new VCurvSpeedUD());
   layout->addWidget(new VCurvSpeed());
   layout->addWidget(new OCurvOffset());

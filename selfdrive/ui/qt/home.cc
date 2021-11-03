@@ -498,8 +498,12 @@ void OffroadHome::hideEvent(QHideEvent *event) {
 }
 
 void OffroadHome::refresh() {
-  date->setText(QDateTime::currentDateTime().toString("dddd, MMMM d"));
-
+  // opkr
+  QLocale::setDefault(QLocale::Korean);
+  QString date_kr = QDate::currentDate().toString(Qt::DefaultLocaleLongDate);
+  QString time_kr = QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
+  date->setText(date_kr + " " + time_kr);
+  
   bool updateAvailable = update_widget->refresh();
   int alerts = alerts_widget->refresh();
 

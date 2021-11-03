@@ -65,9 +65,10 @@ ComIssueGone:0
 SteerThreshold:150
 RecordingCount:200
 RecordingQuality:1
-CruiseGapAdjust:0
+CruiseGapAdjust:1
+DrivingCruiseGapAdjust:1
 AutoEnable:1
-CruiseAutoRes:0
+CruiseAutoRes:1
 AutoResOption:0
 AutoResCondition:0
 SteerWindDown:0
@@ -89,7 +90,7 @@ LCTimingFactorEnable:1
 AutoEnableSpeed:3
 SafetyCamDecelDistGain:0
 OpkrLiveTunePanelEnable:0
-RadarLongHelper:1
+RadarLongHelper:0
 LiveSteerRatioPercent:-5
 StoppingDistAdj:0
 ShowError:0
