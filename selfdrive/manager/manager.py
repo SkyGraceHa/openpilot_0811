@@ -117,6 +117,7 @@ def manager_init():
     ("RecordingCount", "100"),
     ("RecordingQuality", "1"),
     ("CruiseGapAdjust", "0"),
+    ("DrivingCruiseGapAdjust", "1"),     
     ("AutoEnable", "1"),
     ("CruiseAutoRes", "0"),
     ("AutoResOption", "0"),
