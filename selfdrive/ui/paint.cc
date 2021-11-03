@@ -449,12 +449,12 @@ static void ui_draw_gear( UIState *s ) {
     ui_print( s, gear_num_x, gear_num_y, strGear );
   } else {
     switch( ngetGearShifter ) {
-      case 1 : ui_draw_image(s, {x, y, w, h}, "gear_P", 1.0f); break;
-      case 2 : ui_draw_image(s, {x, y, w, h}, "gear_D", 1.0f); break;
-      case 3 : ui_draw_image(s, {x, y, w, h}, "gear_N", 1.0f); break;
-      case 4 : ui_draw_image(s, {x, y, w, h}, "gear_R", 1.0f); break;
-      case 7 : ui_draw_image(s, {x, y, w, h}, "gear_R", 1.0f); break;
-      default: ui_draw_image(s, {x, y, w, h}, "gear_X", 1.0f); break;
+      case 1 : ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_P", 1.0f); break;
+      case 2 : ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_D", 1.0f); break;
+      case 3 : ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_N", 1.0f); break;
+      case 4 : ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_R", 1.0f); break;
+      case 7 : ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_R", 1.0f); break;
+      default: ui_draw_image(s, {x, y+10, w-10, h-10}, "gear_X", 1.0f); break;
     }
     // nvgFillColor(s->vg, nColor);
     // ui_print( s, center_x, center_y, str_msg );
