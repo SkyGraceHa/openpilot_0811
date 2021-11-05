@@ -543,9 +543,9 @@ static void ui_draw_vision_maxspeed_org(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   if (cruise_speed >= 30 && s->scene.controls_state.getEnabled()) {
     const std::string cruise_speed_str = std::to_string((int)std::nearbyint(cruise_speed));
-    ui_draw_text(s, rect.centerX(), bdr_s+65, cruise_speed_str.c_str(), 26 * 2.8, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, cruise_speed_str.c_str(), 26 * 3.3, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
   } else {
-  	ui_draw_text(s, rect.centerX(), bdr_s+65, "-", 26 * 2.8, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-semibold");
+  	ui_draw_text(s, rect.centerX(), bdr_s+65, "-", 26 * 3.3, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-semibold");
   }
   if (is_cruise_set) {
     const std::string maxspeed_str = std::to_string((int)std::nearbyint(maxspeed));
@@ -1462,7 +1462,7 @@ static void ui_draw_auto_hold(UIState *s) {
     y_pos = 740;
   }
   const int width = 500;
-  const Rect rect = {s->fb_w/2 - width/2, y_pos, width, 160};
+  const Rect rect = {s->fb_w/2 - width/2, y_pos, width, 145};
   NVGcolor color = COLOR_BLACK_ALPHA(50);
   ui_fill_rect(s->vg, rect, color, 30.);
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(50), 10, 20.);

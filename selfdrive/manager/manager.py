@@ -124,6 +124,7 @@ def manager_init():
     ("AutoResCondition", "0"),
     ("SteerWindDown", "0"),
     ("OpkrMonitoringMode", "0"),
+    ("OpkrMonitorEyesThreshold", "45"),
     ("OpkrMonitorNormalEyesThreshold", "45"),
     ("OpkrMonitorBlinkThreshold", "35"),
     ("MadModeEnabled", "1"),
@@ -160,6 +161,9 @@ def manager_init():
     ("OCurvOffset", "0"),
     ("StockNaviSpeedEnabled", "0"),
     ("OPKRNaviSelect", "0"),
+    ("dp_atl", "1"),
+    ("E2ELong", "0"),
+    ("GoogleMapEnabled", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
