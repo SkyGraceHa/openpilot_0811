@@ -223,6 +223,7 @@ typedef struct UIScene {
   int display_maxspeed_time = 0;
   bool mapbox_running;
   int navi_select;
+  bool tmux_error_check = false;
   float currentGear;
   float electGearStep;
 
