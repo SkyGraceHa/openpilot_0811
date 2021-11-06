@@ -620,7 +620,6 @@ static void ui_draw_vision_speed(UIState *s) {
   const int viz_speed_w = 250;
   const int viz_speed_x = s->fb_w/2 - viz_speed_w/2;
   const int viz_add = 50;
-  const int header_h = 400; 
   
   // turning blinker from kegman, moving signal by OPKR
   if ((scene.leftBlinker || scene.rightBlinker) && !scene.comma_stock_ui){
