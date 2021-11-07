@@ -351,14 +351,14 @@ static void ui_draw_debug(UIState *s) {
   
   nvgTextAlign(s->vg, NVG_ALIGN_MIDDLE | NVG_ALIGN_MIDDLE);
 
-  if (scene.nDebugUi1) {
+  if (scene.nDebugUi1 & !scene.mapbox_running) {
     ui_draw_text(s, ui_viz_rx, ui_viz_ry+820+(scene.mapbox_running ? 18:0), scene.alertTextMsg1.c_str(), scene.mapbox_running?34:45, COLOR_WHITE_ALPHA(125), "sans-semibold");
     ui_draw_text(s, ui_viz_rx, ui_viz_ry+860+(scene.mapbox_running ? 3:0), scene.alertTextMsg2.c_str(), scene.mapbox_running?34:45, COLOR_WHITE_ALPHA(125), "sans-semibold");
   }
 
   
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(130));
-  if (scene.nDebugUi2) {
+  if (scene.nDebugUi2 & !scene.mapbox_running) {
     //if (scene.gpsAccuracyUblox != 0.00) {
     //  nvgFontSize(s->vg, 34);
     //  ui_print(s, 28, 28, "LAT／LON: %.5f／%.5f", scene.latitudeUblox, scene.longitudeUblox);
@@ -543,9 +543,9 @@ static void ui_draw_vision_maxspeed_org(UIState *s) {
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   if (cruise_speed >= 30 && s->scene.controls_state.getEnabled()) {
     const std::string cruise_speed_str = std::to_string((int)std::nearbyint(cruise_speed));
-    ui_draw_text(s, rect.centerX(), bdr_s+65, cruise_speed_str.c_str(), 26 * 3.3, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
+    ui_draw_text(s, rect.centerX(), bdr_s+65, cruise_speed_str.c_str(), 26 * 2.8, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
   } else {
-  	ui_draw_text(s, rect.centerX(), bdr_s+65, "-", 26 * 3.3, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-semibold");
+  	ui_draw_text(s, rect.centerX(), bdr_s+65, "-", 26 * 2.8, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-semibold");
   }
   if (is_cruise_set) {
     const std::string maxspeed_str = std::to_string((int)std::nearbyint(maxspeed));
@@ -617,44 +617,6 @@ static void ui_draw_vision_speed(UIState *s) {
   const float speed = std::max(0.0, (*s->sm)["carState"].getCarState().getVEgo() * (s->scene.is_metric ? 3.6 : 2.2369363));
   const std::string speed_str = std::to_string((int)std::nearbyint(speed));
   UIScene &scene = s->scene;  
-  const int viz_speed_w = 250;
-  const int viz_speed_x = s->fb_w/2 - viz_speed_w/2;
-  const int viz_add = 50;
-  
-  // turning blinker from kegman, moving signal by OPKR
-  if ((scene.leftBlinker || scene.rightBlinker) && !scene.comma_stock_ui){
-    scene.blinker_blinkingrate -= 5;
-    if(scene.blinker_blinkingrate<0) scene.blinker_blinkingrate = 68; // blinker_blinkingrate 는 IG/FL 깜빡이 주기에 거의 맞춤
-
-    float progress = (68 - scene.blinker_blinkingrate) / 68.0;
-    float offset = progress * (6.4 - 1.0) + 1.0;
-    if (offset < 1.0) offset = 1.0;
-    if (offset > 6.4) offset = 6.4;
-
-    float alpha = 1.0;
-    if (progress < 0.25) alpha = progress / 0.25;
-    if (progress > 0.75) alpha = 1.0 - ((progress - 0.75) / 0.25);
-
-    if(scene.leftBlinker) {
-      nvgBeginPath(s->vg);
-      nvgMoveTo(s->vg, viz_speed_x - (viz_add*offset)                  , (header_h/4.2));
-      nvgLineTo(s->vg, viz_speed_x - (viz_add*offset) - (viz_speed_w/2), (header_h/2.1));
-      nvgLineTo(s->vg, viz_speed_x - (viz_add*offset)                  , (header_h/1.4));
-      nvgClosePath(s->vg);
-      nvgFillColor(s->vg, nvgRGBA(255,100,0,(scene.blinker_blinkingrate<=68 && scene.blinker_blinkingrate>=30)?180:0));
-      nvgFill(s->vg);
-    }
-    if(scene.rightBlinker) {
-      nvgBeginPath(s->vg);
-      nvgMoveTo(s->vg, viz_speed_x + (viz_add*offset) + viz_speed_w      , (header_h/4.2));
-      nvgLineTo(s->vg, viz_speed_x + (viz_add*offset) + (viz_speed_w*1.5), (header_h/2.1));
-      nvgLineTo(s->vg, viz_speed_x + (viz_add*offset) + viz_speed_w      , (header_h/1.4));
-      nvgClosePath(s->vg);
-      nvgFillColor(s->vg, nvgRGBA(255,100,0,(scene.blinker_blinkingrate<=68 && scene.blinker_blinkingrate>=30)?180:0));
-      nvgFill(s->vg);
-    } 
-  }
-
   NVGcolor val_color = COLOR_WHITE;
 
   if (scene.brakePress && !scene.comma_stock_ui) {
@@ -707,6 +669,41 @@ static void ui_draw_vision_event(UIState *s) {
     if (!s->scene.comma_stock_ui) ui_draw_gear(s);
   }
   if (!s->scene.comma_stock_ui) ui_draw_debug(s);
+}
+
+static void ui_draw_turn_signal(UIState *s) {
+  UIScene &scene = s->scene;  
+  const int turn_signal_size = 300;
+  const int turn_signal_x_left = (s->fb_w/2 - 200);
+  const int turn_signal_x_right = (s->fb_w/2 + 200);
+  const int turn_signal_y = 540;
+  const int turn_signal_img_size_w = (turn_signal_size * 1);
+  const int turn_signal_img_size_h = (turn_signal_size * 1);
+  const int turn_signal_img_x_left = (turn_signal_x_left - (turn_signal_img_size_w / 2));
+  const int turn_signal_img_x_right = (turn_signal_x_right - (turn_signal_img_size_w / 2));
+  const int turn_signal_img_y = (turn_signal_y - (turn_signal_size / 4));  
+  float turn_signal_img_alpha;
+  
+  // turning blinker from kegman, moving signal by OPKR
+  if ((scene.leftBlinker || scene.rightBlinker) && !scene.comma_stock_ui){
+    scene.blinker_blinkingrate -= 5;
+    if(scene.blinker_blinkingrate<0) scene.blinker_blinkingrate = 67; // blinker_blinkingrate 는 IG/FL 깜빡이 주기에 거의 맞춤
+
+    if (scene.blinker_blinkingrate>=30) {
+      turn_signal_img_alpha = 0.95f;
+    } else {
+      turn_signal_img_alpha = 0.0f;
+    }
+  } else {
+    scene.blinker_blinkingrate = 67;
+  }
+
+  if(scene.leftBlinker) {
+    ui_draw_image(s, {turn_signal_img_x_left, turn_signal_img_y, turn_signal_img_size_w, turn_signal_img_size_h}, "turn_signal_left", turn_signal_img_alpha);
+  }
+  if(scene.rightBlinker) {
+    ui_draw_image(s, {turn_signal_img_x_right, turn_signal_img_y, turn_signal_img_size_w, turn_signal_img_size_h}, "turn_signal_right", turn_signal_img_alpha);
+  }
 }
 
 //BB START: functions added for the display of various items
@@ -1212,6 +1209,7 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_vision_speed(s);
   ui_draw_vision_event(s);
   if (!s->scene.comma_stock_ui) {
+    ui_draw_turn_signal(s);
     bb_ui_draw_UI(s);
     ui_draw_tpms(s);
     if (s->scene.controls_state.getEnabled()) {
@@ -1461,7 +1459,7 @@ static void ui_draw_auto_hold(UIState *s) {
     y_pos = 740;
   }
   const int width = 500;
-  const Rect rect = {s->fb_w/2 - width/2, y_pos, width, 145};
+  const Rect rect = {s->fb_w/2 - width/2, y_pos, width, 160};
   NVGcolor color = COLOR_BLACK_ALPHA(50);
   ui_fill_rect(s->vg, rect, color, 30.);
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(50), 10, 20.);
@@ -1580,6 +1578,8 @@ void ui_nvg_init(UIState *s) {
     {"gear_D", "../assets/addon/img/gearD.png"},
     {"gear_X", "../assets/addon/img/gearX.png"},
     {"gear_BG", "../assets/addon/img/gearBG.png"},    
+    {"turn_signal_left", "../assets/addon/img/turnSignal_L.png"},
+    {"turn_signal_right", "../assets/addon/img/turnSignal_R.png"},
     {"tire_pressure", "../assets/images/img_tire_pressure.png"},
   };
   for (auto [name, file] : images) {
