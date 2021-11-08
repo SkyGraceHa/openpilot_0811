@@ -76,6 +76,18 @@ public:
   }
 };
 
+class DrivingCruiseGapAdjustToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  DrivingCruiseGapAdjustToggle() : ToggleControl("Change Cruise Gap when SCC", "Automatically adjust the distance between cars while driving. [20km/h~(Gap2), 45km/h~(Gap3), 85km/h~(Gap4)]. Don't choose long control. Sometimes, cruise error can occur.", "../assets/offroad/icon_shell.png", Params().getBool("DrivingCruiseGapAdjust")) {
+    QObject::connect(this, &DrivingCruiseGapAdjustToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("DrivingCruiseGapAdjust", status);
+    });
+  }
+};
+
 class AutoEnabledToggle : public ToggleControl {
   Q_OBJECT
 
@@ -510,6 +522,30 @@ public:
     QObject::connect(this, &StockNaviSpeedToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("StockNaviSpeedEnabled", status);
+    });
+  }
+};
+
+class E2ELongToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  E2ELongToggle() : ToggleControl("Enable E2E Long", "Activate E2E Long. It may work unexpectedly. Be careful.", "../assets/offroad/icon_shell.png", Params().getBool("E2ELong")) {
+    QObject::connect(this, &E2ELongToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("E2ELong", status);
+    });
+  }
+};
+
+class GoogleMapEnabledToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  GoogleMapEnabledToggle() : ToggleControl("Use GoogleMap for Mapbox", "Use GoogleMap when you search a destination.", "../assets/offroad/icon_shell.png", Params().getBool("GoogleMapEnabled")) {
+    QObject::connect(this, &GoogleMapEnabledToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("GoogleMapEnabled", status);
     });
   }
 };

@@ -137,7 +137,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     modeChangeMaponly @114;
     needBrake @115;
     standStill @116;
-    modelLongAlert @117;
+    e2eLongAlert @117;
     isgActive @118;
     camSpeedDown @119;
     gapAdjusting @120;
@@ -232,6 +232,17 @@ struct CarState {
   electGearStep @53 :Int8;
   isMph @54 :Bool;
 
+  autoHold @55 : Int32;
+  tpms @56 : Tpms;
+  currentGear @57 :Float32;  
+
+  struct Tpms {
+    fl @0 :Float32;
+    fr @1 :Float32;
+    rl @2 :Float32;
+    rr @3 :Float32;
+  } 
+  
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
@@ -497,6 +508,7 @@ struct CarParams {
   vCruisekph @72: Float32;
   resSpeed @73: Float32;
   vFuture @74: Float32;
+  aqValue @75: Float32;
 
   struct LateralParams {
     torqueBP @0 :List(Int32);

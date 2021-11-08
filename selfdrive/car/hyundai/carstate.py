@@ -247,6 +247,12 @@ class CarState(CarStateBase):
 
     self.parkBrake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
 
+    # TPMS code added from Neokii
+    tpms_unit = cp.vl["TPMS11"]["UNIT"] * 0.725 if int(cp.vl["TPMS11"]["UNIT"]) > 0 else 1.
+    ret.tpms.fl = tpms_unit * cp.vl["TPMS11"]["PRESSURE_FL"]
+    ret.tpms.fr = tpms_unit * cp.vl["TPMS11"]["PRESSURE_FR"]
+    ret.tpms.rl = tpms_unit * cp.vl["TPMS11"]["PRESSURE_RL"]
+    ret.tpms.rr = tpms_unit * cp.vl["TPMS11"]["PRESSURE_RR"]
     # TPMS code added from OPKR
     if cp.vl["TPMS11"]["UNIT"] == 0.0:
       ret.tpmsPressureFl = cp.vl["TPMS11"]["PRESSURE_FL"]
@@ -323,6 +329,7 @@ class CarState(CarStateBase):
 
     # Gear Selection via Cluster - For those Kia/Hyundai which are not fully discovered, we can use the Cluster Indicator for Gear Selection,
     # as this seems to be standard over all cars, but is not the preferred method.
+    ret.electGearStep = 0
     if self.CP.carFingerprint in FEATURES["use_cluster_gears"]:
       gear = cp.vl["CLU15"]["CF_Clu_Gear"]
     elif self.CP.carFingerprint in FEATURES["use_tcu_gears"]:
@@ -332,13 +339,23 @@ class CarState(CarStateBase):
       ret.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
     else:
       gear = cp.vl["LVR12"]["CF_Lvr_Gear"]
-      ret.electGearStep = 0
+
 
     if self.gear_correction:
       ret.gearShifter = GearShifter.drive
     else:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(gear))
 
+    ret.currentGear = 0
+    if not self.CP.carFingerprint in FEATURES["use_elect_gears"]:
+      if self.CP.carFingerprint in FEATURES["use_cluster_gears"]:
+        ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"]
+      elif self.CP.carFingerprint in FEATURES["use_cluster_gears_ext"]: # for Avante, I30
+        ret.currentGear = cp.vl["TCU12"]["CUR_GR"]
+      elif self.CP.carFingerprint in FEATURES["use_tcu_gears"]:
+        ret.currentGear = cp.vl["TCU12"]["CUR_GR"]
+      else:
+        ret.currentGear = cp.vl["LVR11"]["CF_Lvr_CGear"]
     if self.CP.fcaBus != -1 or self.CP.carFingerprint in FEATURES["use_fca"]:
       ret.stockAeb = cp_fca.vl["FCA11"]["FCA_CmdAct"] != 0
       ret.stockFcw = cp_fca.vl["FCA11"]["CF_VSM_Warn"] == 2
@@ -431,6 +448,8 @@ class CarState(CarStateBase):
 
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
+      ("CF_Lvr_CGear", "LVR11", 0), 
+      ("CF_Lvr_GearInf", "LVR11", 0),  #Transmission Gear (0=N or P, 1~8=D, 14=R)
 
       ("CF_Lvr_CruiseSet", "LVR12", 0),
       ("CRUISE_LAMP_M", "EMS16", 0),
