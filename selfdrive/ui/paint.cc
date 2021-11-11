@@ -387,7 +387,7 @@ static void ui_draw_debug(UIState *s) {
       if (scene.liveNaviData.opkrspeedlimitdist) ui_print(s, ui_viz_rx, ui_viz_ry+640, "DS:%.0f", scene.liveNaviData.opkrspeedlimitdist);
       if (scene.liveNaviData.opkrturninfo) ui_print(s, ui_viz_rx, ui_viz_ry+680, "TI:%d", scene.liveNaviData.opkrturninfo);
       if (scene.liveNaviData.opkrdisttoturn) ui_print(s, ui_viz_rx, ui_viz_ry+720, "DT:%.0f", scene.liveNaviData.opkrdisttoturn);
-    } else if (!scene.map_is_running && (*s->sm)["carState"].getCarState().getSafetySign() > 29) {
+    } else if (!scene.map_is_running && (*s->sm)["carState"].getCarState().getSafetySign() > 19) {
       ui_print(s, ui_viz_rx, ui_viz_ry+560, "SL:%.0f", (*s->sm)["carState"].getCarState().getSafetySign());
       ui_print(s, ui_viz_rx, ui_viz_ry+600, "DS:%.0f", (*s->sm)["carState"].getCarState().getSafetyDist());
     }
@@ -523,14 +523,14 @@ static void ui_draw_vision_maxspeed_org(UIState *s) {
   float maxspeed = s->scene.controls_state.getVCruise();
   float cruise_speed = s->scene.vSetDis;
   const bool is_cruise_set = maxspeed != 0 && maxspeed != SET_SPEED_NA;
-  s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 29 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
+  s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 19 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
   if (is_cruise_set && !s->scene.is_metric) { maxspeed *= 0.6225; }
 
   const Rect rect = {bdr_s, bdr_s, 184, 202};
   NVGcolor color = COLOR_BLACK_ALPHA(100);
   if (s->scene.is_speed_over_limit) {
     color = COLOR_OCHRE_ALPHA(100);
-  } else if (s->scene.limitSpeedCamera > 29 && !s->scene.is_speed_over_limit) {
+  } else if (s->scene.limitSpeedCamera > 19 && !s->scene.is_speed_over_limit) {
     color = nvgRGBA(0, 120, 0, 100);
   } else if (s->scene.cruiseAccStatus) {
     color = nvgRGBA(0, 100, 200, 100);
@@ -579,7 +579,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 static void ui_draw_vision_cruise_speed(UIState *s) {
   float cruise_speed = s->scene.vSetDis;
   if (!s->scene.is_metric) { cruise_speed *= 0.621371; }
-  s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 29 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
+  s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 19 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
   const Rect rect = {bdr_s, bdr_s, 184, 202};
 
   NVGcolor color = COLOR_GREY;
@@ -587,7 +587,7 @@ static void ui_draw_vision_cruise_speed(UIState *s) {
     color = nvgRGBA(183, 0, 0, 200);
   } else if (s->scene.is_speed_over_limit) {
   	color = COLOR_OCHRE_ALPHA(200);
-  } else if (s->scene.limitSpeedCamera > 29 && !s->scene.is_speed_over_limit) {
+  } else if (s->scene.limitSpeedCamera > 19 && !s->scene.is_speed_over_limit) {
     color = nvgRGBA(0, 120, 0, 200);
   } else if (s->scene.cruiseAccStatus) {
     color = nvgRGBA(0, 100, 200, 200);
@@ -598,7 +598,7 @@ static void ui_draw_vision_cruise_speed(UIState *s) {
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(100), 10, 20.);
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-  if (s->scene.limitSpeedCamera > 29) {
+  if (s->scene.limitSpeedCamera > 19) {
     ui_draw_text(s, rect.centerX(), bdr_s+65, "Limit", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-bold");
   } else if (s->scene.cruiseAccStatus) {
     ui_draw_text(s, rect.centerX(), bdr_s+65, "Cruise", 26 * 2.2, COLOR_WHITE_ALPHA(s->scene.cruiseAccStatus ? 200 : 100), "sans-bold");
@@ -1051,6 +1051,7 @@ static void bb_ui_draw_UI(UIState *s) {
   bb_ui_draw_measures_left(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
 }
 
+// show speedlimit value
 static void draw_safetysign(UIState *s) {
   const int diameter = 185;
   const int diameter2 = 170;
@@ -1081,12 +1082,12 @@ static void draw_safetysign(UIState *s) {
   }
   opacity = safety_dist>600 ? 0 : (600 - safety_dist) * 0.425;
 
-  if (safety_speed > 29 && !s->scene.comma_stock_ui) {
+  if (safety_speed > 19 && !s->scene.comma_stock_ui) {
     ui_fill_rect(s->vg, rect_si, COLOR_WHITE_ALPHA(200), diameter2/2);
     ui_draw_rect(s->vg, rect_s, COLOR_RED_ALPHA(200), 20, diameter/2);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     if (safety_speed < 100) {
-      ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), safetySpeed, 163, COLOR_BLACK_ALPHA(200), "sans-bold");
+      ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), safetySpeed, 160, COLOR_BLACK_ALPHA(200), "sans-bold");
     } else {
       ui_draw_text(s, rect_s.centerX(), rect_s.centerY(), safetySpeed, 115, COLOR_BLACK_ALPHA(200), "sans-bold");
     }
