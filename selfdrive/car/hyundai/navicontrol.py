@@ -45,6 +45,7 @@ class NaviControl():
     self.osm_curv_speed_offset = int(Params().get("OCurvOffset", encoding="utf8"))
     self.osm_wait_timer = 0
     self.stock_navi_info_enabled = Params().get_bool("StockNaviSpeedEnabled")
+    self.osm_speedlimit_enabled = Params().get_bool("OSMSpeedLimitEnable")
 
   def update_lateralPlan(self):
     self.sm.update(0)
@@ -137,10 +138,14 @@ class NaviControl():
     #if not mapValid or trafficType == 0:
     #  return  cruise_set_speed_kph
 
-    if CS.map_enabled and self.liveNaviData.safetySign == 124: #과속방지턱이 있으면 주행속도에 연동하여 제한속도 30km/h까지 가변으로 감속하기
-      cruise_set_speed_kph = interp(v_ego_kph, [40, 60, 80], [30, 35, 40])
+    if int(self.sm['liveMapData'].speedLimit) and self.osm_speedlimit_enabled:  # osm speedlimit
       self.onSpeedControl = True
-    elif CS.map_enabled and self.liveNaviData.speedLimit > 29:
+      spdTarget = self.sm['liveMapData'].speedLimit
+      cruise_set_speed_kph = spdTarget + round(spdTarget*0.01*self.map_spdlimit_offset)
+    elif CS.map_enabled and self.liveNaviData.safetySign == 124: #과속방지턱이 있으면 주행속도에 연동하여 제한속도 30km/h까지 가변으로 감속하기
+      cruise_set_speed_kph = interp(v_ego_kph, [40, 60, 80], [30, 35, 40])
+      self.onSpeedControl = True      
+    elif CS.map_enabled and self.liveNaviData.speedLimit > 29:  # mappy speedlimit
       self.map_speed_dist = max(0, self.liveNaviData.speedLimitDistance - 30)
       self.map_speed = self.liveNaviData.speedLimit
       if self.map_speed_dist > 1250:
@@ -167,7 +172,7 @@ class NaviControl():
         self.onSpeedControl = False
         return cruise_set_speed_kph
       cruise_set_speed_kph = spdTarget + round(spdTarget*0.01*self.map_spdlimit_offset)
-    elif CS.safety_sign > 29 and self.stock_navi_info_enabled:
+    elif CS.safety_sign > 29 and self.stock_navi_info_enabled:  # cat stock navi speedlimit
       self.map_speed_dist = max(0, CS.safety_dist - 30)
       self.map_speed = CS.safety_sign
       if CS.safety_block_remain_dist < 255:
