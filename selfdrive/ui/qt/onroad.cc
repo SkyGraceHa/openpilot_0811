@@ -13,7 +13,6 @@
 #include "selfdrive/ui/qt/maps/map.h"
 #endif
 
-
 OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   QVBoxLayout *main_layout  = new QVBoxLayout(this);
   main_layout->setMargin(bdr_s);
@@ -59,13 +58,15 @@ void OnroadWindow::updateState(const UIState &s) {
       if (!s.scene.is_OpenpilotViewEnabled) {
         alerts->updateAlert(CONTROLS_WAITING_ALERT, bgColor);
         // opkr
-        if (QFileInfo::exists("/data/log/error.txt") && s.scene.show_error) {
+        if (QFileInfo::exists("/data/log/error.txt") && s.scene.show_error && !s.scene.tmux_error_check) {
           QFileInfo fileInfo;
           fileInfo.setFile("/data/log/error.txt");
           QDateTime modifiedtime = fileInfo.lastModified();
           QString modified_time = modifiedtime.toString("yyyy-MM-dd hh:mm:ss ");
           const std::string txt = util::read_file("/data/log/error.txt");
-          RichTextDialog::alert(modified_time + QString::fromStdString(txt), this);
+          if (RichTextDialog::alert(modified_time + QString::fromStdString(txt), this)) {
+            QUIState::ui_state.scene.tmux_error_check = true;
+          }
         }
       }
     } else if ((nanos_since_boot() - sm.rcv_time("controlsState")) / 1e9 > CONTROLS_TIMEOUT) {
@@ -74,13 +75,15 @@ void OnroadWindow::updateState(const UIState &s) {
       if (!s.scene.is_OpenpilotViewEnabled) {
         alerts->updateAlert(CONTROLS_UNRESPONSIVE_ALERT, bgColor);
         // opkr
-        if (QFileInfo::exists("/data/log/error.txt") && s.scene.show_error) {
+        if (QFileInfo::exists("/data/log/error.txt") && s.scene.show_error && !s.scene.tmux_error_check) {
           QFileInfo fileInfo;
           fileInfo.setFile("/data/log/error.txt");
           QDateTime modifiedtime = fileInfo.lastModified();
           QString modified_time = modifiedtime.toString("yyyy-MM-dd hh:mm:ss ");
           const std::string txt = util::read_file("/data/log/error.txt");
-          RichTextDialog::alert(modified_time + QString::fromStdString(txt), this);
+          if (RichTextDialog::alert(modified_time + QString::fromStdString(txt), this)) {
+            QUIState::ui_state.scene.tmux_error_check = true;
+          }
         }
       }
     }
@@ -129,7 +132,7 @@ void OnroadWindow::offroadTransition(bool offroad) {
       settings.setAccessToken(token.trimmed());
 
       MapWindow * m = new MapWindow(settings);
-      m->setFixedWidth(width() / 2 - bdr_s);
+      m->setFixedWidth(topWidget(this)->width() / 2);
       QObject::connect(this, &OnroadWindow::offroadTransitionSignal, m, &MapWindow::offroadTransition);
       split->addWidget(m, 0, Qt::AlignRight);
       map = m;

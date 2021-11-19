@@ -60,8 +60,11 @@ class CarInterface(CarInterfaceBase):
     ret.steerLimitTimer = 0.8
     tire_stiffness_factor = 1.
 
-    ret.longitudinalTuning.kpBP = [0., 4., 9., 17., 23., 31.]
-    ret.longitudinalTuning.kpV = [1.0, 0.9, 0.8, 0.65, 0.5, 0.4]
+    # Neokii
+    ret.longitudinalTuning.kpBP = [0., 10.*CV.KPH_TO_MS, 20.*CV.KPH_TO_MS, 40.*CV.KPH_TO_MS, 70.*CV.KPH_TO_MS, 100.*CV.KPH_TO_MS, 130.*CV.KPH_TO_MS]
+    ret.longitudinalTuning.kpV = [1.2, 0.93, 0.8, 0.68, 0.59, 0.51, 0.43]
+    # ret.longitudinalTuning.kpBP = [0., 4., 9., 17., 23., 31.]
+    # ret.longitudinalTuning.kpV = [1.0, 0.9, 0.8, 0.65, 0.5, 0.4]
     ret.longitudinalTuning.kiBP = [0., 4., 9., 17., 23., 31.]
     ret.longitudinalTuning.kiV = [0.26, 0.23, 0.22, 0.18, 0.15, 0.13]
 
@@ -75,10 +78,12 @@ class CarInterface(CarInterfaceBase):
     ret.stoppingControl = False
     ret.vEgoStopping = 0.5  # 1.0
     ret.vEgoStarting = 0.5
-    ret.startAccel = -0.2 # 0.0
+    ret.startAccel = -0.8 # Neokii
+    # ret.startAccel = -0.2 # 0.0
     ret.stopAccel = -0.5 # 0.0
     ret.stoppingDecelRate = 0.2 # 0.8
-    ret.startingAccelRate = 0.8 # 3.2
+    ret.startingAccelRate = 5.0  # Neokii : brake_travel/s while releasing on restart    
+    # ret.startingAccelRate = 0.8 # 3.2
 
     ret.vCruisekph = 0
     ret.resSpeed = 0
